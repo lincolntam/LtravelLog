@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="zh-HK">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Login - (L)TravelCal</title>
+    <link rel="stylesheet" href="login-style.css?v=0.40.1">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+</head>
+<body>
+
+<div class="login-container">
+    <div class="glass-card">
+        <div class="header">
+            <div class="logo-icon"><span class="material-icons">navigation</span></div>
+            <h1>Welcome back</h1>
+            <p>Please enter your details to sign in.</p>
+        </div>
+
+        <form id="login-form">
+            <div class="input-group">
+                <label>Email</label>
+                <div class="input-row">
+                    <input type="text" id="email" placeholder="Email or Test Key" required>
+                    <button type="submit" class="arrow-btn">
+                        <span class="material-icons">arrow_forward</span>
+                    </button>
+                </div>
+            </div>
+
+            <div class="options">
+                <label class="checkbox-container">
+                    <input type="checkbox"> Remember me
+                </label>
+            </div>
+
+            <div class="divider">OR</div>
+
+            <div class="social-login">
+                <button type="button" class="social-btn">
+                    <img src="https://www.google.com/favicon.ico" alt="Google">
+                    Continue with Google
+                    <span class="material-icons mini-arrow">arrow_forward</span>
+                </button>
+            </div>
+
+            <div class="footer-links">
+                Don't have an account? <a href="#">Create Account</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    // 檢查登入狀態
+    if (localStorage.getItem('isLoggedIn') === 'true') {
+        window.location.href = 'index.html';
+    }
+
+    document.getElementById('login-form').onsubmit = (e) => {
+        e.preventDefault();
+        const val = document.getElementById('email').value.trim();
+    };
+</script>
+</body>
+</html>
