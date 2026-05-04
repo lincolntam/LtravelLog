@@ -1,59 +1,148 @@
-<!-- 註冊區塊 (初始隱藏) -->
-<div id="signup-section" style="display: none;">
-    <div class="glass-card">
-        <div class="top-nav">
-            <span class="brand">LTravelLog</span>
-            <a href="#" onclick="toggleSection('login')" class="signup">Back to Log in</a>
-        </div>
-        <h2>Sign up</h2>
-        <form id="signup-form">
-            <input type="email" id="up-email" class="node-input" placeholder="e-mail address" required>
-            <input type="password" id="up-password" class="node-input" placeholder="password" required>
-            <input type="text" id="invitation-code" class="node-input" placeholder="invitation code" required>
-            
-            <div class="form-footer">
-                <p>Verify code to join.</p>
-                <button type="submit" class="arrow-btn">
-                    <span class="material-icons">how_to_reg</span>
-                </button>
-            </div>
-        </form>
+<!DOCTYPE html>
+<html lang="zh-HK">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Login - LTravelLog</title>
+    <!-- 建議將 CSS 獨立或直接寫在下方 -->
+    <link rel="stylesheet" href="login-style.css?v=0.40.4">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <style>
+        /* 快速修復全白問題：確保背景顏色與基本佈局 */
+        body { background: #e9e2d7; margin: 0; padding: 0; display: flex; justify-content: center; align-items: center; min-height: 100vh; }
+        .hidden { display: none !important; }
+    </style>
+</head>
+<body>
+
+    <!-- 背景裝飾 -->
+    <div class="background-decor">
+        <div class="circle circle-1"></div>
+        <div class="circle circle-2"></div>
     </div>
-</div>
 
-<script>
-    // 切換登入與註冊介面
-    function toggleSection(type) {
-        const loginSec = document.getElementById('login-section');
-        const signupSec = document.getElementById('signup-section');
-        if (type === 'signup') {
-            loginSec.style.display = 'none';
-            signupSec.style.display = 'block';
-        } else {
-            loginSec.style.display = 'block';
-            signupSec.style.display = 'none';
+    <div class="login-page">
+        <!-- 1. 登入區塊 -->
+        <div id="login-section" class="glass-card">
+            <div class="top-nav">
+                <span class="brand">LTravelLog</span>
+                <a href="#" onclick="toggleSection('signup')" class="signup">Sign up</a>
+            </div>
+            <h2>Log in</h2>
+            <form id="login-form">
+                <div class="input-field">
+                    <input type="email" id="login-email" placeholder="e-mail address" required autocomplete="username">
+                </div>
+                <div class="input-field">
+                    <input type="password" id="login-password" placeholder="password" required autocomplete="current-password">
+                </div>
+                <div class="form-footer">
+                    <p>Enter your credentials.</p>
+                    <button type="submit" class="arrow-btn">
+                        <span class="material-icons">arrow_forward</span>
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        <!-- 2. 註冊區塊 (初始隱藏) -->
+        <div id="signup-section" class="glass-card hidden">
+            <div class="top-nav">
+                <span class="brand">LTravelLog</span>
+                <a href="#" onclick="toggleSection('login')" class="signup">Back to Log in</a>
+            </div>
+            <h2>Sign up</h2>
+            <form id="signup-form">
+                <div class="input-field">
+                    <input type="email" id="up-email" placeholder="e-mail address" required>
+                </div>
+                <div class="input-field">
+                    <input type="password" id="up-password" placeholder="create password" required>
+                </div>
+                <div class="input-field">
+                    <input type="text" id="invitation-code" placeholder="invitation code" required>
+                </div>
+                <div class="form-footer">
+                    <p>Verify code to join.</p>
+                    <button type="submit" class="arrow-btn">
+                        <span class="material-icons">how_to_reg</span>
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        <!-- 裝飾小卡片 -->
+        <div class="dark-card info-card">
+            <h3>New in</h3>
+            <p>LTravelLog Designer</p>
+        </div>
+    </div>
+
+    <script>
+        // 切換介面邏輯
+        function toggleSection(type) {
+            const loginSec = document.getElementById('login-section');
+            const signupSec = document.getElementById('signup-section');
+            if (type === 'signup') {
+                loginSec.classList.add('hidden');
+                signupSec.classList.remove('hidden');
+            } else {
+                loginSec.classList.remove('hidden');
+                signupSec.classList.add('hidden');
+            }
         }
-    }
 
-    // 註冊邏輯
-    document.getElementById('signup-form').onsubmit = async (e) => {
-        e.preventDefault();
-        const email = document.getElementById('up-email').value;
-        const password = document.getElementById('up-password').value;
-        const code = document.getElementById('invitation-code').value;
+        // 登入處理
+        document.getElementById('login-form').onsubmit = async (e) => {
+            e.preventDefault();
+            const email = document.getElementById('login-email').value;
+            const password = document.getElementById('login-password').value;
 
-        const response = await fetch('/api/signup', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ email, password, code })
-        });
+            try {
+                const response = await fetch('/api/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email, password })
+                });
+                const result = await response.json();
 
-        const result = await response.json();
-        if (response.ok) {
-            alert("Account created! Please log in.");
-            toggleSection('login');
-        } else {
-            alert(result.error || "Signup failed");
-        }
-    };
-</script>
+                if (response.ok) {
+                    localStorage.setItem('isLoggedIn', 'true');
+                    localStorage.setItem('userEmail', email);
+                    window.location.href = 'index.html';
+                } else {
+                    alert(result.error || "登入失敗");
+                }
+            } catch (err) {
+                alert("伺服器連線失敗");
+            }
+        };
+
+        // 註冊處理
+        document.getElementById('signup-form').onsubmit = async (e) => {
+            e.preventDefault();
+            const email = document.getElementById('up-email').value;
+            const password = document.getElementById('up-password').value;
+            const code = document.getElementById('invitation-code').value;
+
+            try {
+                const response = await fetch('/api/signup', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email, password, code })
+                });
+                const result = await response.json();
+
+                if (response.ok) {
+                    alert("帳戶建立成功！請登入。");
+                    toggleSection('login');
+                } else {
+                    alert(result.error || "註冊失敗");
+                }
+            } catch (err) {
+                alert("伺服器連線失敗");
+            }
+        };
+    </script>
+</body>
+</html>
