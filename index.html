@@ -5,16 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>LTravelLog - Precision Navigation</title>
     
-    <!-- 1. 強制 Safari 優先讀取這個圖示，解決顯示 Favicon 或 L 字的問題 -->
-    <link rel="apple-touch-icon" href="icons/icon-192x192.png">
-    <!-- 加入版本號參數 ?v=... 能強制手機重新抓取圖示，不使用舊快取 -->
-    <link rel="apple-touch-icon" sizes="152x152" href="icons/icon-192x192.png?v=0.40.4">
-    <link rel="apple-touch-icon" sizes="180x180" href="icons/icon-192x192.png?v=0.40.4">
-    
-    <!-- 2. PWA Manifest -->
+    <!-- PWA & iPhone 圖示修復 -->
     <link rel="manifest" href="manifest.json?v=0.40.4">
-    
-    <!-- 3. iOS 啟動設定 -->
+    <link rel="apple-touch-icon" href="icons/icon-192x192.png">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="LTravelLog">
@@ -24,9 +17,11 @@
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     
     <script>
+        // 登入狀態檢查
         if (localStorage.getItem('isLoggedIn') !== 'true') {
             window.location.href = 'login.html';
         }
+        
         function logout() {
             localStorage.removeItem('isLoggedIn');
             localStorage.removeItem('userEmail');
@@ -36,6 +31,7 @@
 </head>
 <body>
 
+    <!-- 頂部橫幅 -->
     <div class="app-banner">
         <div class="banner-overlay">
             <h1>LTravelLog</h1>
@@ -47,21 +43,31 @@
     </div>
 
     <div class="app-container">
+        <!-- 1. 行程節點卡片 -->
         <section class="card">
             <div class="card-header">
                 <span class="material-icons" style="font-size:14px; color:var(--primary)">place</span>
                 <label>行程節點 (Nodes)</label>
             </div>
             <div id="nodes-container">
-                <div class="input-wrapper"><input class="node-input" placeholder="由哪裡出發？" oninput="calculate()"></div>
-                <div class="input-wrapper"><input class="node-input" placeholder="目的地在哪？" oninput="calculate()"></div>
+                <div class="input-wrapper">
+                    <input class="node-input" placeholder="由哪裡出發？" autocomplete="off" oninput="calculate()">
+                </div>
+                <div class="input-wrapper">
+                    <input class="node-input" placeholder="目的地在哪？" autocomplete="off" oninput="calculate()">
+                </div>
             </div>
             <div class="action-row">
-                <button class="secondary-btn" onclick="addNode()"><span class="material-icons" style="font-size:16px;">add</span> 中途站</button>
-                <button class="secondary-btn" id="retBtn" onclick="toggleReturn()"><span class="material-icons" style="font-size:16px;">repeat</span> 往返模式</button>
+                <button class="secondary-btn" onclick="addNode()">
+                    <span class="material-icons" style="font-size:16px;">add</span> 中途站
+                </button>
+                <button class="secondary-btn" id="retBtn" onclick="toggleReturn()">
+                    <span class="material-icons" style="font-size:16px;">repeat</span> 往返模式
+                </button>
             </div>
         </section>
 
+        <!-- 2. 偏好設定卡片 -->
         <section class="card">
             <div class="card-header">
                 <span class="material-icons" style="font-size:14px; color:var(--primary)">settings</span>
@@ -72,8 +78,17 @@
                     <span>出發時間</span>
                     <input type="datetime-local" id="start-time" onchange="calculate()">
                 </div>
+                
+                <div class="return-only" style="display: none;">
+                    <div class="setting-item">
+                        <span>回程時間</span>
+                        <input type="datetime-local" id="return-time" onchange="calculate()">
+                    </div>
+                </div>
+
                 <div class="setting-item">
                     <span>能源方案</span>
+                    <!-- ✅ 修復點：統一格式為 "耗電率|單價" 避免 NaN -->
                     <select id="car-model" onchange="calculate()">
                         <option value="0.160|1.343">EV 住宅 - 非高峰 ($1.343)</option>
                         <option value="0.160|1.773">EV 住宅 - 高峰 ($1.773)</option>
@@ -83,20 +98,43 @@
             </div>
         </section>
 
-        <div id="map"></div>
-
-        <section class="stats-grid">
-            <div class="stat-card"><span>總里程</span><b id="km">0.0 <small>km</small></b></div>
-            <div class="stat-card"><span>總時間</span><b id="duration">0 <small>min</small></b></div>
-            <div class="stat-card"><span>隧道費</span><b id="t-fee" style="color: var(--primary);">$0</b></div>
-            <div class="stat-card"><span>能源費</span><b id="e-cost">$0</b></div>
+        <!-- 3. 隧道選擇 -->
+        <section class="card conditional-show" id="go-card">
+            <div class="card-header"><label>去程隧道選擇</label></div>
+            <div class="tunnel-grid" id="goTunnels"></div>
         </section>
 
-        <div style="text-align: center; padding: 20px 0 100px 0; font-size: 10px; color: rgba(255,255,255,0.3);">
+        <section class="card conditional-show" id="back-card">
+            <div class="card-header"><label>回程隧道選擇</label></div>
+            <div class="tunnel-grid" id="backTunnels"></div>
+        </section>
+
+        <!-- 4. 地圖展示 -->
+        <div id="map"></div>
+
+        <!-- 5. 統計數據 -->
+        <section class="stats-grid">
+            <div class="stat-card">
+                <span>總里程</span><b id="km">0.0 <small>km</small></b>
+            </div>
+            <div class="stat-card">
+                <span>總時間</span><b id="duration">0 <small>min</small></b>
+            </div>
+            <div class="stat-card">
+                <span>隧道費</span><b id="t-fee" style="color: var(--primary);">$0</b>
+            </div>
+            <div class="stat-card">
+                <span>能源費</span><b id="e-cost">$0</b>
+            </div>
+        </section>
+
+        <!-- 頁面底部版本號 -->
+        <div style="text-align: center; padding: 20px 0 100px 0; font-size: 10px; color: rgba(255,255,255,0.3); letter-spacing: 1px;">
             VERSION 0.40.4
         </div>
     </div>
 
+    <!-- 底部導航欄 -->
     <footer class="bottom-nav">
         <div class="nav-content">
             <div class="total-display-group">
