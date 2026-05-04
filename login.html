@@ -1,64 +1,59 @@
-<!DOCTYPE html>
-<html lang="zh-HK">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login - LTravelLog</title>
-    <link rel="stylesheet" href="login-style.css">
-    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-</head>
-<body>
-
-<div class="background-decor">
-    <div class="circle circle-1"></div>
-    <div class="circle circle-2"></div>
-</div>
-
-<div class="login-page">
-    <div class="glass-card main-login">
+<!-- 註冊區塊 (初始隱藏) -->
+<div id="signup-section" style="display: none;">
+    <div class="glass-card">
         <div class="top-nav">
             <span class="brand">LTravelLog</span>
-            <a href="#" class="signup">Sign up</a>
+            <a href="#" onclick="toggleSection('login')" class="signup">Back to Log in</a>
         </div>
-        
-        <h2>Log in</h2>
-        
-        <form id="login-form">
-            <div class="input-field">
-                <input type="text" id="email" placeholder="e-mail address" required>
-            </div>
-            <div class="input-field">
-                <input type="password" id="password" placeholder="password" required>
-            </div>
+        <h2>Sign up</h2>
+        <form id="signup-form">
+            <input type="email" id="up-email" class="node-input" placeholder="e-mail address" required>
+            <input type="password" id="up-password" class="node-input" placeholder="password" required>
+            <input type="text" id="invitation-code" class="node-input" placeholder="invitation code" required>
             
             <div class="form-footer">
-                <p>Please consume responsibly.</p>
+                <p>Verify code to join.</p>
                 <button type="submit" class="arrow-btn">
-                    <span class="material-icons">arrow_forward</span>
+                    <span class="material-icons">how_to_reg</span>
                 </button>
             </div>
         </form>
     </div>
-
-    <!-- 圖片中的黑色小卡片 -->
-    <div class="dark-card info-card">
-        <h3>New in</h3>
-        <p>LTravelLog Designer</p>
-    </div>
 </div>
 
 <script>
-    document.getElementById('login-form').onsubmit = (e) => {
-        e.preventDefault();
-        const val = document.getElementById('email').value.trim();
-        // 保留之前的測試金鑰邏輯
-        if (val === 'Sa302306') {
-            localStorage.setItem('isLoggedIn', 'true');
-            window.location.href = 'index.html';
+    // 切換登入與註冊介面
+    function toggleSection(type) {
+        const loginSec = document.getElementById('login-section');
+        const signupSec = document.getElementById('signup-section');
+        if (type === 'signup') {
+            loginSec.style.display = 'none';
+            signupSec.style.display = 'block';
         } else {
-            alert("請輸入正確的測試資訊。");
+            loginSec.style.display = 'block';
+            signupSec.style.display = 'none';
+        }
+    }
+
+    // 註冊邏輯
+    document.getElementById('signup-form').onsubmit = async (e) => {
+        e.preventDefault();
+        const email = document.getElementById('up-email').value;
+        const password = document.getElementById('up-password').value;
+        const code = document.getElementById('invitation-code').value;
+
+        const response = await fetch('/api/signup', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email, password, code })
+        });
+
+        const result = await response.json();
+        if (response.ok) {
+            alert("Account created! Please log in.");
+            toggleSection('login');
+        } else {
+            alert(result.error || "Signup failed");
         }
     };
 </script>
-</body>
-</html>
