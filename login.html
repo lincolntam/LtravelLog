@@ -2,64 +2,62 @@
 <html lang="zh-HK">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Login - (L)TravelCal</title>
-    <link rel="stylesheet" href="login-style.css?v=0.40.1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - LTravelLog</title>
+    <link rel="stylesheet" href="login-style.css">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 </head>
 <body>
 
-<div class="login-container">
-    <div class="glass-card">
-        <div class="header">
-            <div class="logo-icon"><span class="material-icons">navigation</span></div>
-            <h1>Welcome back</h1>
-            <p>Please enter your details to sign in.</p>
+<div class="background-decor">
+    <div class="circle circle-1"></div>
+    <div class="circle circle-2"></div>
+</div>
+
+<div class="login-page">
+    <div class="glass-card main-login">
+        <div class="top-nav">
+            <span class="brand">LTravelLog</span>
+            <a href="#" class="signup">Sign up</a>
         </div>
-
+        
+        <h2>Log in</h2>
+        
         <form id="login-form">
-            <div class="input-group">
-                <label>Email</label>
-                <div class="input-row">
-                    <input type="text" id="email" placeholder="Email or Test Key" required>
-                    <button type="submit" class="arrow-btn">
-                        <span class="material-icons">arrow_forward</span>
-                    </button>
-                </div>
+            <div class="input-field">
+                <input type="text" id="email" placeholder="e-mail address" required>
             </div>
-
-            <div class="options">
-                <label class="checkbox-container">
-                    <input type="checkbox"> Remember me
-                </label>
+            <div class="input-field">
+                <input type="password" id="password" placeholder="password" required>
             </div>
-
-            <div class="divider">OR</div>
-
-            <div class="social-login">
-                <button type="button" class="social-btn">
-                    <img src="https://www.google.com/favicon.ico" alt="Google">
-                    Continue with Google
-                    <span class="material-icons mini-arrow">arrow_forward</span>
+            
+            <div class="form-footer">
+                <p>Please consume responsibly.</p>
+                <button type="submit" class="arrow-btn">
+                    <span class="material-icons">arrow_forward</span>
                 </button>
             </div>
-
-            <div class="footer-links">
-                Don't have an account? <a href="#">Create Account</a>
-            </div>
         </form>
+    </div>
+
+    <!-- 圖片中的黑色小卡片 -->
+    <div class="dark-card info-card">
+        <h3>New in</h3>
+        <p>LTravelLog Designer</p>
     </div>
 </div>
 
 <script>
-    // 檢查登入狀態
-    if (localStorage.getItem('isLoggedIn') === 'true') {
-        window.location.href = 'index.html';
-    }
-
     document.getElementById('login-form').onsubmit = (e) => {
         e.preventDefault();
         const val = document.getElementById('email').value.trim();
+        // 保留之前的測試金鑰邏輯
+        if (val === 'Sa302306') {
+            localStorage.setItem('isLoggedIn', 'true');
+            window.location.href = 'index.html';
+        } else {
+            alert("請輸入正確的測試資訊。");
+        }
     };
 </script>
 </body>

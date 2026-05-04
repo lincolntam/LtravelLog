@@ -1,34 +1,107 @@
 :root {
-    --primary-action: #58CCFF;
-    --bg-dark: #071021;
-    --input-bg-dark: #000000;
-    --glass-bg: rgba(255, 255, 255, 0.02);
-    --glass-border: rgba(255, 255, 255, 0.08);
+    --glass-bg: rgba(255, 255, 255, 0.4);
+    --glass-border: rgba(255, 255, 255, 0.2);
+    --text-color: #333;
 }
 
 body {
-    margin: 0; height: 100vh; display: flex; align-items: center; justify-content: center;
-    background: radial-gradient(circle at 50% 35%, #13274F 0%, #071021 75%);
-    font-family: -apple-system, sans-serif; color: white; overflow: hidden;
+    margin: 0;
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: -apple-system, sans-serif;
+    background: #e9e2d7; /* 圖片中溫暖的底色 */
+    overflow: hidden;
 }
 
+/* 背景裝飾圓形，用來襯托玻璃感 */
+.background-decor .circle {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(50px);
+}
+.circle-1 { width: 300px; height: 300px; background: #c5d7e8; top: 10%; left: 20%; }
+.circle-2 { width: 250px; height: 250px; background: #60a5fa; bottom: 10%; right: 25%; }
+
+.login-page {
+    position: relative;
+    z-index: 10;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+/* 玻璃卡片主體 */
 .glass-card {
-    width: 320px; padding: 40px; border-radius: 32px; text-align: center;
-    background: var(--glass-bg); backdrop-filter: blur(25px) saturate(180%);
+    width: 320px;
+    padding: 35px;
+    background: var(--glass-bg);
+    backdrop-filter: blur(15px); /* 磨砂核心 */
+    -webkit-backdrop-filter: blur(15px);
     border: 1px solid var(--glass-border);
-    box-shadow: 0 25px 50px rgba(0,0,0,0.6), inset 0 1px 1px rgba(255,255,255,0.05);
+    border-radius: 40px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.05);
 }
 
-.logo-icon { width: 48px; height: 48px; border: 1px solid var(--glass-border); border-radius: 12px; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px; background: rgba(255,255,255,0.05); }
+.top-nav {
+    display: flex;
+    justify-content: space-between;
+    font-size: 14px;
+    margin-bottom: 40px;
+    color: var(--text-color);
+}
 
-.input-row { display: flex; background: var(--input-bg-dark); border: 1px solid var(--glass-border); border-radius: 16px; padding: 8px; margin-top: 5px; }
-.input-row input { flex: 1; background: transparent; border: none; padding: 10px; color: white; outline: none; }
+.brand { font-weight: bold; opacity: 0.6; }
+.signup { text-decoration: none; color: var(--text-color); font-weight: 500; }
 
-.arrow-btn { background: var(--primary-action); border: none; border-radius: 12px; width: 40px; height: 40px; cursor: pointer; box-shadow: 0 4px 15px rgba(88, 204, 255, 0.4); }
+h2 { font-size: 32px; margin: 0 0 30px; color: var(--text-color); }
 
-.divider { margin: 25px 0; font-size: 12px; color: #5a616d; display: flex; align-items: center; gap: 10px; }
-.divider::before, .divider::after { content: ''; flex: 1; height: 1px; background: var(--glass-border); }
+.input-field input {
+    width: 100%;
+    padding: 15px 20px;
+    margin-bottom: 15px;
+    border: none;
+    border-radius: 25px;
+    background: rgba(255, 255, 255, 0.5); /* 輸入框半透明 */
+    box-sizing: border-box;
+    font-size: 14px;
+    outline: none;
+}
 
-.social-btn { width: 100%; display: flex; align-items: center; background: rgba(255,255,255,0.02); border: 1px solid var(--glass-border); border-radius: 14px; padding: 12px; color: #e0e0e0; cursor: pointer; }
-.social-btn img { width: 18px; margin-right: 15px; }
-.mini-arrow { margin-left: auto; font-size: 18px; color: #5a616d; }
+.form-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 20px;
+}
+
+.form-footer p { font-size: 11px; opacity: 0.6; }
+
+.arrow-btn {
+    width: 45px;
+    height: 45px;
+    border: none;
+    border-radius: 50%;
+    background: rgba(0, 0, 0, 0.1);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: 0.3s;
+}
+
+.arrow-btn:hover { background: rgba(0, 0, 0, 0.2); }
+
+/* 黑色小卡片 */
+.dark-card {
+    width: 320px;
+    padding: 25px 35px;
+    background: #1a1a1a;
+    color: white;
+    border-radius: 35px;
+    box-sizing: border-box;
+}
+
+.dark-card h3 { margin: 0; font-size: 24px; }
+.dark-card p { margin: 5px 0 0; opacity: 0.5; font-size: 14px; }
