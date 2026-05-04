@@ -4,12 +4,16 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>LTravelLog - Precision Navigation</title>
+    <!-- PWA & 圖示設定 -->
+    <link rel="manifest" href="manifest.json">
+    <link rel="apple-touch-icon" href="icons/icon-192x192.png">
+    <meta name="theme-color" content="#000000">
+    
     <link rel="stylesheet" href="style.css?v=0.40.4">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <script>
-        // 登入狀態檢查
         if (localStorage.getItem('isLoggedIn') !== 'true') window.location.href = 'login.html';
-
+        
         function logout() {
             localStorage.removeItem('isLoggedIn');
             localStorage.removeItem('userEmail');
@@ -19,7 +23,6 @@
 </head>
 <body>
 
-    <!-- 頂部橫幅 (Banner) -->
     <div class="app-banner">
         <div class="banner-overlay">
             <h1>LTravelLog</h1>
@@ -31,31 +34,21 @@
     </div>
 
     <div class="app-container">
-        <!-- 1. 行程節點卡片 -->
         <section class="card">
             <div class="card-header">
                 <span class="material-icons" style="font-size:14px; color:var(--primary)">place</span>
                 <label>行程節點 (Nodes)</label>
             </div>
             <div id="nodes-container">
-                <div class="input-wrapper">
-                    <input class="node-input" placeholder="由哪裡出發？" autocomplete="off" oninput="calculate()">
-                </div>
-                <div class="input-wrapper">
-                    <input class="node-input" placeholder="目的地在哪？" autocomplete="off" oninput="calculate()">
-                </div>
+                <div class="input-wrapper"><input class="node-input" placeholder="由哪裡出發？" oninput="calculate()"></div>
+                <div class="input-wrapper"><input class="node-input" placeholder="目的地在哪？" oninput="calculate()"></div>
             </div>
             <div class="action-row">
-                <button class="secondary-btn" onclick="addNode()">
-                    <span class="material-icons" style="font-size:16px;">add</span> 中途站
-                </button>
-                <button class="secondary-btn" id="retBtn" onclick="toggleReturn()">
-                    <span class="material-icons" style="font-size:16px;">repeat</span> 往返模式
-                </button>
+                <button class="secondary-btn" onclick="addNode()"><span class="material-icons" style="font-size:16px;">add</span> 中途站</button>
+                <button class="secondary-btn" id="retBtn" onclick="toggleReturn()"><span class="material-icons" style="font-size:16px;">repeat</span> 往返模式</button>
             </div>
         </section>
 
-        <!-- 2. 偏好設定卡片 -->
         <section class="card">
             <div class="card-header">
                 <span class="material-icons" style="font-size:14px; color:var(--primary)">settings</span>
@@ -66,17 +59,8 @@
                     <span>出發時間</span>
                     <input type="datetime-local" id="start-time" onchange="calculate()">
                 </div>
-                
-                <div class="return-only" style="display: none;">
-                    <div class="setting-item">
-                        <span>回程時間</span>
-                        <input type="datetime-local" id="return-time" onchange="calculate()">
-                    </div>
-                </div>
-
                 <div class="setting-item">
                     <span>能源方案</span>
-                    <!-- ✅ 修復點：統一 value 格式為 "耗電率|單價" 避免 NaN -->
                     <select id="car-model" onchange="calculate()">
                         <option value="0.160|1.343">EV 住宅 - 非高峰 ($1.343)</option>
                         <option value="0.160|1.773">EV 住宅 - 高峰 ($1.773)</option>
@@ -86,38 +70,21 @@
             </div>
         </section>
 
-        <!-- 3. 隧道選擇 -->
-        <section class="card conditional-show" id="go-card">
-            <div class="card-header"><label>去程隧道選擇</label></div>
-            <div class="tunnel-grid" id="goTunnels"></div>
-        </section>
-
-        <section class="card conditional-show" id="back-card">
-            <div class="card-header"><label>回程隧道選擇</label></div>
-            <div class="tunnel-grid" id="backTunnels"></div>
-        </section>
-
-        <!-- 4. 地圖展示 -->
         <div id="map"></div>
 
-        <!-- 5. 統計數據 -->
         <section class="stats-grid">
-            <div class="stat-card">
-                <span>總里程</span><b id="km">0.0 <small>km</small></b>
-            </div>
-            <div class="stat-card">
-                <span>總時間</span><b id="duration">0 <small>min</small></b>
-            </div>
-            <div class="stat-card">
-                <span>隧道費</span><b id="t-fee" style="color: var(--primary);">$0</b>
-            </div>
-            <div class="stat-card">
-                <span>能源費</span><b id="e-cost">$0</b>
-            </div>
+            <div class="stat-card"><span>總里程</span><b id="km">0.0 <small>km</small></b></div>
+            <div class="stat-card"><span>總時間</span><b id="duration">0 <small>min</small></b></div>
+            <div class="stat-card"><span>隧道費</span><b id="t-fee" style="color: var(--primary);">$0</b></div>
+            <div class="stat-card"><span>能源費</span><b id="e-cost">$0</b></div>
         </section>
+
+        <!-- 版本號 -->
+        <div style="text-align: center; padding: 20px 0 80px 0; font-size: 10px; color: rgba(255,255,255,0.3);">
+            Version 0.40.4
+        </div>
     </div>
 
-    <!-- 底部導航欄 -->
     <footer class="bottom-nav">
         <div class="nav-content">
             <div class="total-display-group">
@@ -130,7 +97,6 @@
         </div>
     </footer>
 
-    <!-- 確保 app.js 存在且包含 calculate() 邏輯 -->
     <script src="app.js?v=0.40.4"></script>
 </body>
 </html>
