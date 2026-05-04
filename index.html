@@ -6,123 +6,111 @@
     <title>LTravelLog - Precision Navigation</title>
     <link rel="stylesheet" href="style.css?v=0.40.4">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-    <script>
-        // 登入狀態檢查
-        if (localStorage.getItem('isLoggedIn') !== 'true') window.location.href = 'login.html';
-    </script>
+    <style>
+        /* 確保基本佈局，避免全白 */
+        body { background: #000; color: #fff; margin: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+        .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; padding: 20px; }
+        .stat-card { background: rgba(255, 255, 255, 0.1); backdrop-filter: blur(10px); padding: 15px; border-radius: 15px; text-align: center; }
+        .total-display { text-align: center; padding: 20px; border-top: 1px solid #333; }
+        .update-btn { background: #e91e63; color: white; border: none; padding: 10px 30px; border-radius: 20px; cursor: pointer; }
+    </style>
 </head>
 <body>
 
-    <!-- 頂部橫幅 (Banner) 已更新名稱 -->
-    <div class="app-banner">
-        <div class="banner-overlay">
-            <h1>LTravelLog</h1>
-            <p>Hong Kong Trip Budgeting & Navigation</p>
+    <div id="app-container">
+        <!-- 頂部標題 -->
+        <header style="padding: 20px;">
+            <h1 style="margin: 0;">LTravelLog</h1>
+            <small style="opacity: 0.6;">Hong Kong Trip Budgeting & Navigation</small>
+        </header>
+
+        <!-- 路線設定區塊 -->
+        <section class="glass-card" style="margin: 0 20px;">
+            <div class="input-group">
+                <label><span class="material-icons" style="font-size: 14px;">place</span> 行程節點 (NODES)</label>
+                <input type="text" value="Hong Kong, Lake Silver, 烏溪沙站" readonly>
+                <input type="text" value="Hong Kong, 沙田 Che Kung Miu Road, 車公廟" readonly>
+            </div>
+        </section>
+
+        <!-- 偏好設定區塊 -->
+        <section class="glass-card" style="margin: 20px;">
+            <div class="setting-item">
+                <label>出發時間</label>
+                <input type="datetime-local" id="departure-time" value="2026-05-04T23:47">
+            </div>
+
+            <div class="setting-item">
+                <label>能源方案</label>
+                <select id="energy-plan" onchange="calculateTotal()">
+                    <option value="1.343">EV 住宅 - 非高峰 ($1.343)</option>
+                    <option value="1.773">EV 住宅 - 高峰 ($1.773)</option>
+                    <!-- ✅ 修復點：value 必須是純數字，避免 NaN -->
+                    <option value="2.43">Tesla Supercharge ($2.430)</option>
+                </select>
+            </div>
+        </section>
+
+        <!-- 地圖預覽 (示意) -->
+        <div id="map-container" style="margin: 20px; height: 200px; background: #222; border-radius: 15px; overflow: hidden;">
+            <img src="https://maps.googleapis.com/maps/api/staticmap?center=22.37,114.18&zoom=12&size=600x200&key=YOUR_API_KEY" style="width: 100%; height: 100%; object-fit: cover;" alt="Map">
         </div>
-        <button class="logout-btn-top" onclick="logout()">
-            <span class="material-icons">logout</span>
-        </button>
-    </div>
 
-    <div class="app-container">
-        <!-- 1. 行程節點卡片 -->
-        <section class="card">
-            <div class="card-header">
-                <span class="material-icons" style="font-size:14px; color:var(--primary)">place</span>
-                <label>行程節點 (Nodes)</label>
-            </div>
-            <div id="nodes-container">
-                <div class="input-wrapper">
-                    <input class="node-input" placeholder="由哪裡出發？" autocomplete="off" oninput="calculate()">
-                </div>
-                <div class="input-wrapper">
-                    <input class="node-input" placeholder="目的地在哪？" autocomplete="off" oninput="calculate()">
-                </div>
-            </div>
-            <div class="action-row">
-                <button class="secondary-btn" onclick="addNode()">
-                    <span class="material-icons" style="font-size:16px;">add</span> 中途站
-                </button>
-                <button class="secondary-btn" id="retBtn" onclick="toggleReturn()">
-                    <span class="material-icons" style="font-size:16px;">repeat</span> 往返模式
-                </button>
-            </div>
-        </section>
-
-        <!-- 2. 偏好設定卡片 -->
-        <section class="card">
-            <div class="card-header">
-                <span class="material-icons" style="font-size:14px; color:var(--primary)">settings</span>
-                <label>偏好設定 (Settings)</label>
-            </div>
-            <div class="settings-group">
-                <div class="setting-item">
-                    <span>出發時間</span>
-                    <input type="datetime-local" id="start-time" onchange="calculate()">
-                </div>
-                
-                <div class="return-only" style="display: none;">
-                    <div class="setting-item">
-                        <span>回程時間</span>
-                        <input type="datetime-local" id="return-time" onchange="calculate()">
-                    </div>
-                </div>
-
-                <div class="setting-item">
-                    <span>能源方案</span>
-                    <select id="car-model" onchange="calculate()">
-                        <option value="0.160|1.343">EV 住宅 - 非高峰 ($1.343)</option>
-                        <option value="0.160|1.773">EV 住宅 - 高峰 ($1.773)</option>
-						<option value="2.43">Tesla Supercharge ($2.430)</option>
-                    </select>
-                </div>
-            </div>
-        </section>
-
-        <!-- 3. 隧道選擇 -->
-        <section class="card conditional-show" id="go-card">
-            <div class="card-header"><label>去程隧道選擇</label></div>
-            <div class="tunnel-grid" id="goTunnels"></div>
-        </section>
-
-        <section class="card conditional-show" id="back-card">
-            <div class="card-header"><label>回程隧道選擇</label></div>
-            <div class="tunnel-grid" id="backTunnels"></div>
-        </section>
-
-        <!-- 4. 地圖展示 -->
-        <div id="map"></div>
-
-        <!-- 5. 統計數據 -->
-        <section class="stats-grid">
+        <!-- 數據統計區塊 -->
+        <div class="stats-grid">
             <div class="stat-card">
-                <span>總里程</span><b id="km">0.0 <small>km</small></b>
+                <small>總里程</small>
+                <div id="distance-val">13.5 km</div>
             </div>
             <div class="stat-card">
-                <span>總時間</span><b id="duration">0 <small>min</small></b>
+                <small>預計耗時</small>
+                <div>18 min</div>
             </div>
             <div class="stat-card">
-                <span>隧道費</span><b id="t-fee" style="color: var(--primary);">$0</b>
+                <small>隧道費</small>
+                <div>$0</div>
             </div>
             <div class="stat-card">
-                <span>能源費</span><b id="e-cost">$0</b>
-            </div>
-        </section>
-    </div>
-
-    <!-- 底部導航欄 -->
-    <footer class="bottom-nav">
-        <div class="nav-content">
-            <div class="total-display-group">
-                <div class="label-top">Estimated Total</div>
-                <div class="main-currency">HK$ <span id="total">0.0</span></div>
-            </div>
-            <div class="nav-actions">
-                <button class="primary-btn" onclick="calculate()">UPDATE</button>
+                <small>能源費</small>
+                <div id="energy-cost">$0.0</div>
             </div>
         </div>
-    </footer>
 
-    <script src="app.js?v=0.40.4"></script>
+        <!-- 底部總計 -->
+        <div class="total-display">
+            <small>ESTIMATED TOTAL</small>
+            <h2 id="grand-total" style="color: #e91e63; margin: 5px 0;">HK$ 0.0</h2>
+            <button class="update-btn" onclick="calculateTotal()">UPDATE</button>
+        </div>
+    </div>
+
+    <script>
+        // 頁面加載後先計算一次
+        window.onload = () => {
+            calculateTotal();
+        };
+
+        function calculateTotal() {
+            // 1. 取得里程數字
+            const distanceText = document.getElementById('distance-val').innerText;
+            const distance = parseFloat(distanceText.replace(' km', '')) || 0;
+
+            // 2. 取得能源價格 (從 select value 取得純數字)
+            const energyPrice = parseFloat(document.getElementById('energy-plan').value) || 0;
+
+            // 3. 設定耗電率 (假設平均 180 Wh/km)
+            const consumptionRate = 180; 
+
+            // 4. 計算能源費用
+            // 公式：(里程 * 耗電率 / 1000) * 單價
+            const energyCost = (distance * consumptionRate / 1000) * energyPrice;
+
+            // 5. 更新 UI
+            document.getElementById('energy-cost').innerText = `$${energyCost.toFixed(1)}`;
+            document.getElementById('grand-total').innerText = `HK$ ${energyCost.toFixed(1)}`;
+
+            console.log(`計算中: 里程 ${distance}, 單價 ${energyPrice}, 結果 ${energyCost}`);
+        }
+    </script>
 </body>
 </html>
