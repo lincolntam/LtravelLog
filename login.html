@@ -4,25 +4,20 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Login - LTravelLog</title>
-    <!-- 建議將 CSS 獨立或直接寫在下方 -->
+    <link rel="manifest" href="manifest.json">
+    <link rel="apple-touch-icon" href="icons/icon-192x192.png">
+    
     <link rel="stylesheet" href="login-style.css?v=0.40.4">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <style>
-        /* 快速修復全白問題：確保背景顏色與基本佈局 */
-        body { background: #e9e2d7; margin: 0; padding: 0; display: flex; justify-content: center; align-items: center; min-height: 100vh; }
+        body { background: #e9e2d7; margin: 0; display: flex; justify-content: center; align-items: center; min-height: 100vh; }
         .hidden { display: none !important; }
     </style>
 </head>
 <body>
 
-    <!-- 背景裝飾 -->
-    <div class="background-decor">
-        <div class="circle circle-1"></div>
-        <div class="circle circle-2"></div>
-    </div>
-
     <div class="login-page">
-        <!-- 1. 登入區塊 -->
+        <!-- 登入區塊 -->
         <div id="login-section" class="glass-card">
             <div class="top-nav">
                 <span class="brand">LTravelLog</span>
@@ -30,22 +25,16 @@
             </div>
             <h2>Log in</h2>
             <form id="login-form">
-                <div class="input-field">
-                    <input type="email" id="login-email" placeholder="e-mail address" required autocomplete="username">
-                </div>
-                <div class="input-field">
-                    <input type="password" id="login-password" placeholder="password" required autocomplete="current-password">
-                </div>
+                <div class="input-field"><input type="email" id="login-email" placeholder="e-mail address" required></div>
+                <div class="input-field"><input type="password" id="login-password" placeholder="password" required></div>
                 <div class="form-footer">
                     <p>Enter your credentials.</p>
-                    <button type="submit" class="arrow-btn">
-                        <span class="material-icons">arrow_forward</span>
-                    </button>
+                    <button type="submit" class="arrow-btn"><span class="material-icons">arrow_forward</span></button>
                 </div>
             </form>
         </div>
 
-        <!-- 2. 註冊區塊 (初始隱藏) -->
+        <!-- 註冊區塊 -->
         <div id="signup-section" class="glass-card hidden">
             <div class="top-nav">
                 <span class="brand">LTravelLog</span>
@@ -53,89 +42,46 @@
             </div>
             <h2>Sign up</h2>
             <form id="signup-form">
-                <div class="input-field">
-                    <input type="email" id="up-email" placeholder="e-mail address" required>
-                </div>
-                <div class="input-field">
-                    <input type="password" id="up-password" placeholder="create password" required>
-                </div>
-                <div class="input-field">
-                    <input type="text" id="invitation-code" placeholder="invitation code" required>
-                </div>
+                <div class="input-field"><input type="email" id="up-email" placeholder="e-mail address" required></div>
+                <div class="input-field"><input type="password" id="up-password" placeholder="create password" required></div>
+                <div class="input-field"><input type="text" id="invitation-code" placeholder="invitation code" required></div>
                 <div class="form-footer">
                     <p>Verify code to join.</p>
-                    <button type="submit" class="arrow-btn">
-                        <span class="material-icons">how_to_reg</span>
-                    </button>
+                    <button type="submit" class="arrow-btn"><span class="material-icons">how_to_reg</span></button>
                 </div>
             </form>
+        </div>
+
+        <!-- 版本號 (移除黑盒子後放在底部) -->
+        <div style="position: fixed; bottom: 15px; width: 100%; text-align: center; font-size: 10px; color: rgba(0,0,0,0.2);">
+            v0.40.4
         </div>
     </div>
 
     <script>
-        // 切換介面邏輯
         function toggleSection(type) {
-            const loginSec = document.getElementById('login-section');
-            const signupSec = document.getElementById('signup-section');
-            if (type === 'signup') {
-                loginSec.classList.add('hidden');
-                signupSec.classList.remove('hidden');
-            } else {
-                loginSec.classList.remove('hidden');
-                signupSec.classList.add('hidden');
-            }
+            document.getElementById('login-section').classList.toggle('hidden', type === 'signup');
+            document.getElementById('signup-section').classList.toggle('hidden', type === 'login');
         }
 
-        // 登入處理
         document.getElementById('login-form').onsubmit = async (e) => {
             e.preventDefault();
             const email = document.getElementById('login-email').value;
             const password = document.getElementById('login-password').value;
-
-            try {
-                const response = await fetch('/api/login', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ email, password })
-                });
-                const result = await response.json();
-
-                if (response.ok) {
-                    localStorage.setItem('isLoggedIn', 'true');
-                    localStorage.setItem('userEmail', email);
-                    window.location.href = 'index.html';
-                } else {
-                    alert(result.error || "登入失敗");
-                }
-            } catch (err) {
-                alert("伺服器連線失敗");
-            }
+            const res = await fetch('/api/login', { method: 'POST', body: JSON.stringify({ email, password }) });
+            if (res.ok) {
+                localStorage.setItem('isLoggedIn', 'true');
+                window.location.href = 'index.html';
+            } else { alert("登入失敗"); }
         };
 
-        // 註冊處理
         document.getElementById('signup-form').onsubmit = async (e) => {
             e.preventDefault();
             const email = document.getElementById('up-email').value;
             const password = document.getElementById('up-password').value;
             const code = document.getElementById('invitation-code').value;
-
-            try {
-                const response = await fetch('/api/signup', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ email, password, code })
-                });
-                const result = await response.json();
-
-                if (response.ok) {
-                    alert("帳戶建立成功！請登入。");
-                    toggleSection('login');
-                } else {
-                    alert(result.error || "註冊失敗");
-                }
-            } catch (err) {
-                alert("伺服器連線失敗");
-            }
+            const res = await fetch('/api/signup', { method: 'POST', body: JSON.stringify({ email, password, code }) });
+            if (res.ok) { alert("註冊成功！"); toggleSection('login'); } else { alert("註冊失敗"); }
         };
     </script>
 </body>
