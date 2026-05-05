@@ -3,83 +3,112 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>LTravelLog</title>
-    <!-- PWA 配置 -->
+    <title>LTravelLog - Precision Navigation</title>
+    
     <link rel="manifest" href="manifest.json?v=0.40.4">
-    <link rel="apple-touch-icon" href="icons/icon-192x192.png?v=0.40.4">
+    <link rel="apple-touch-icon" href="icons/icon-192x192.png">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="LTravelLog">
+    <meta name="theme-color" content="#000000">
     
     <link rel="stylesheet" href="style.css?v=0.40.4">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    
+    <script>
+        // 保留你的登入檢查邏輯
+        if (localStorage.getItem('isLoggedIn') !== 'true') {
+            window.location.href = 'login.html';
+        }
+        function logout() {
+            localStorage.removeItem('isLoggedIn');
+            localStorage.removeItem('userEmail');
+            window.location.href = 'login.html';
+        }
+    </script>
 </head>
 <body>
 
-    <!-- Google Maps 容器 -->
     <div id="map"></div>
 
     <div class="app-shell">
-        <!-- 步驟 1: 初始狀態 (左側 UI) -->
-        <div id="step-1" class="ui-step">
+        <!-- 步驟 1: 初始狀態 (搜尋起點) -->
+        <div id="step-1" class="ui-step active">
             <div class="glass-sheet">
                 <div class="recent-trips">
-                    <p style="color:#64748b; font-size:12px; margin-bottom:12px; font-weight:600;">RECENT TRIPS</p>
+                    <p class="section-label">RECENT TRIPS</p>
                     <div class="trip-item">
-                        <span class="material-icons" style="font-size:18px;">history</span> 
+                        <span class="material-icons">history</span> 
                         <span>Central to Mong Kok</span>
                     </div>
                 </div>
                 <button class="step-btn-primary" onclick="goToStep(2)">Where you go?</button>
+                <button class="logout-btn-minimal" onclick="logout()">Logout</button>
             </div>
         </div>
 
-        <!-- 步驟 2: 偏好設定 (中間 UI) -->
+        <!-- 步驟 2: 偏好與節點設定 (原本的卡片內容) -->
         <div id="step-2" class="ui-step">
-            <div class="glass-sheet">
+            <div class="glass-sheet main-sheet">
                 <div class="sheet-handle" onclick="goToStep(1)"></div>
+                
+                <!-- 行程節點 -->
                 <section class="card">
                     <div id="nodes-container">
-                        <input class="node-input" placeholder="From?" oninput="calculate()">
-                        <input class="node-input" placeholder="To?" oninput="calculate()">
+                        <input class="node-input" placeholder="由哪裡出發？" oninput="calculate()">
+                        <input class="node-input" placeholder="目的地在哪？" oninput="calculate()">
+                    </div>
+                    <div class="action-row">
+                        <button class="secondary-btn" onclick="addNode()">+ 中途站</button>
+                        <button class="secondary-btn" id="retBtn" onclick="toggleReturn()">往返模式</button>
                     </div>
                 </section>
+
+                <!-- 能源與時間 -->
                 <section class="card">
-                    <select id="car-model" class="modern-select" onchange="calculate()">
-                        <option value="0.160|1.343">EV 住宅 - 非高峰 ($1.343)</option>
-                        <option value="0.160|1.773">EV 住宅 - 高峰 ($1.773)</option>
-                        <option value="0.160|2.430">Tesla Supercharge ($2.430)</option>
-                    </select>
+                    <div class="setting-item">
+                        <span>出發時間</span>
+                        <input type="datetime-local" id="start-time" onchange="calculate()">
+                    </div>
+                    <div class="setting-item">
+                        <span>能源方案</span>
+                        <select id="car-model" class="modern-select" onchange="calculate()">
+                            <option value="0.160|1.343">EV 住宅 - 非高峰 ($1.343)</option>
+                            <option value="0.160|1.773">EV 住宅 - 高峰 ($1.773)</option>
+                            <option value="0.160|2.430">Tesla Supercharge ($2.430)</option>
+                        </select>
+                    </div>
                 </section>
-                <button class="step-btn-primary" onclick="goToStep(3)">Lets Go</button>
+
+                <button class="step-btn-primary" onclick="goToStep(3)">Calculate Budget</button>
             </div>
         </div>
 
-        <!-- 步驟 3: 行程總結 (右側 UI) -->
+        <!-- 步驟 3: 行程總結 (統計數據) -->
         <div id="step-3" class="ui-step">
-            <div class="glass-sheet">
-                <div style="text-align:center; margin-bottom:20px;">
-                    <h3 style="margin:0; font-size:22px; color:#1e293b;">Arriving</h3>
-                    <p style="margin:5px 0 0; color:#10B981; font-weight:600;">Calculation Ready</p>
+            <div class="glass-sheet summary-sheet">
+                <div class="summary-header">
+                    <h3>Trip Summary</h3>
+                    <p id="version-tag">VERSION 0.40.4</p>
                 </div>
                 
                 <div class="stats-row">
                     <div class="stat-box"><span>Dist</span><b id="km">0.0</b></div>
-                    <div class="stat-box"><span>Time</span><b id="duration">0</b></div>
                     <div class="stat-box"><span>Tunnels</span><b id="t-fee">$0</b></div>
+                    <div class="stat-box"><span>Energy</span><b id="e-cost">$0</b></div>
                 </div>
                 
                 <div class="total-bar">
-                    <span style="font-weight:600; color:#64748b;">Total Cost</span>
+                    <span>Estimated Total</span>
                     <span class="price">HK$ <span id="total">0.0</span></span>
                 </div>
                 
-                <button class="cancel-btn" onclick="goToStep(1)">Cancel</button>
+                <button class="cancel-btn" onclick="goToStep(1)">Edit Trip</button>
             </div>
         </div>
     </div>
 
-    <!-- 替換為你的 Google Maps API Key -->
+    <!-- 請確保在此處替換為你的 Google Maps API Key -->
     <script src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&callback=initMap" async defer></script>
     <script src="app.js?v=0.40.4"></script>
 </body>
