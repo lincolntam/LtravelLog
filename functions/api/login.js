@@ -1,61 +1,56 @@
+import { SignJWT } from "jose";
+import bcrypt from "bcryptjs";
+
 export async function onRequestPost(context) {
-    const { request, env } = context;
+  const { request, env } = context;
 
-    try {
-        // 1. 取得前端傳來的 JSON 資料
-        const { email, password } = await request.json();
+  let body;
+  try {
+    body = await request.json();
+  } catch {
+    return jsonResponse({ error: "Invalid JSON body" }, 400);
+  }
 
-        // 2. 基本欄位檢查
-        if (!email || !password) {
-            return new Response(
-                JSON.stringify({ error: "請填寫 Email 和密碼" }), 
-                { status: 400, headers: { "Content-Type": "application/json" } }
-            );
-        }
+  const { username, password } = body;
 
-        // 3. 檢查環境變數中的資料庫是否已綁定 (變數名稱必須為 DB)
-        if (!env.DB) {
-            console.error("D1 Database binding 'DB' is missing.");
-            return new Response(
-                JSON.stringify({ error: "資料庫連線未設定 (Database binding missing)" }), 
-                { status: 500, headers: { "Content-Type": "application/json" } }
-            );
-        }
+  if (!username || !password) {
+    return jsonResponse({ error: "Username and password are required" }, 400);
+  }
 
-        // 4. 從 D1 資料庫查詢用戶
-        const user = await env.DB.prepare(
-            "SELECT * FROM users WHERE email = ?"
-        ).bind(email).first();
+  // TODO: Move this user record to Cloudflare D1 / KV / Supabase later.
+  // Default demo user:
+  // username: admin
+  // password: admin123
+  const user = {
+    username: "admin",
+    password_hash: "$2a$10$7QJ7v6Q7Zr8Qk8J1K7lH6uQ5X8vYz1m8e2ZQk3xQf3GJr9sT1yK2e"
+  };
 
-        // 5. 驗證邏輯
-        if (!user) {
-            // 用戶不存在
-            return new Response(
-                JSON.stringify({ error: "找不到此帳戶，請先註冊" }), 
-                { status: 401, headers: { "Content-Type": "application/json" } }
-            );
-        }
+  const isUsernameValid = username === user.username;
+  const isPasswordValid = await bcrypt.compare(password, user.password_hash);
 
-        if (user.password === password) {
-            // 登入成功
-            return new Response(
-                JSON.stringify({ message: "登入成功", status: "success" }), 
-                { status: 200, headers: { "Content-Type": "application/json" } }
-            );
-        } else {
-            // 密碼錯誤
-            return new Response(
-                JSON.stringify({ error: "密碼不正確" }), 
-                { status: 401, headers: { "Content-Type": "application/json" } }
-            );
-        }
+  if (!isUsernameValid || !isPasswordValid) {
+    return jsonResponse({ error: "Invalid login" }, 401);
+  }
 
-    } catch (err) {
-        // 捕捉未知的系統錯誤 (例如 JSON 解析失敗或 SQL 報錯)
-        console.error("Login API Error:", err);
-        return new Response(
-            JSON.stringify({ error: "伺服器內部錯誤: " + err.message }), 
-            { status: 500, headers: { "Content-Type": "application/json" } }
-        );
+  if (!env.JWT_SECRET) {
+    return jsonResponse({ error: "JWT_SECRET is not configured" }, 500);
+  }
+
+  const token = await new SignJWT({ username })
+    .setProtectedHeader({ alg: "HS256" })
+    .setIssuedAt()
+    .setExpirationTime("2h")
+    .sign(new TextEncoder().encode(env.JWT_SECRET));
+
+  return jsonResponse({ token });
+}
+
+function jsonResponse(data, status = 200) {
+  return new Response(JSON.stringify(data), {
+    status,
+    headers: {
+      "Content-Type": "application/json"
     }
+  });
 }
