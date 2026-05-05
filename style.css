@@ -1,79 +1,70 @@
 body {
-  margin: 0;
-  font-family: sans-serif;
-  background: #f2f2f2;
+  margin:0;
+  font-family:sans-serif;
 }
 
-/* 地圖背景 */
-.map-bg {
-  position: fixed;
-  inset: 0;
-  background: linear-gradient(#eee,#ddd);
+#map {
+  position:fixed;
+  inset:0;
 }
 
-/* 中間 pin */
 .center-pin {
-  position: absolute;
-  top: 30%;
-  left: 50%;
-  transform: translateX(-50%);
-  text-align: center;
+  position:absolute;
+  top:30%;
+  left:50%;
+  transform:translateX(-50%);
+  text-align:center;
+  z-index:2;
 }
 
 .pin-label {
-  background: #1abc9c;
-  color: white;
-  padding: 10px;
-  border-radius: 6px;
+  background:#1abc9c;
+  color:white;
+  padding:10px;
+  border-radius:6px;
 }
 
 .pin-icon {
-  margin-top: 10px;
-  background: rgba(0,255,150,0.2);
-  border-radius: 50%;
-  padding: 10px;
+  margin-top:10px;
+  background:rgba(0,255,150,0.2);
+  border-radius:50%;
+  padding:10px;
 }
 
-/* 卡 */
 .search-card, .result-card {
-  position: fixed;
-  bottom: 0;
-  width: 100%;
-  background: white;
-  border-radius: 20px 20px 0 0;
-  padding: 20px;
-  box-shadow: 0 -10px 30px rgba(0,0,0,0.1);
+  position:fixed;
+  bottom:0;
+  width:100%;
+  background:white;
+  border-radius:20px 20px 0 0;
+  padding:20px;
+  z-index:3;
 }
 
-/* 初始隱藏 result */
 .result-card {
-  display: none;
+  display:none;
 }
 
 .node-input {
-  width: 100%;
-  padding: 12px;
-  margin-bottom: 10px;
+  width:100%;
+  padding:12px;
+  margin-bottom:10px;
 }
 
-/* 按鈕 */
 .main-btn {
-  width: 100%;
-  padding: 14px;
-  background: #1abc9c;
-  color: white;
-  border: none;
-  border-radius: 10px;
+  width:100%;
+  padding:14px;
+  background:#1abc9c;
+  color:white;
+  border:none;
+  border-radius:10px;
 }
 
-/* stats */
 .stats {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  margin-top: 10px;
+  display:grid;
+  grid-template-columns:1fr 1fr;
 }
 
 .total {
-  font-size: 24px;
-  margin-top: 10px;
+  font-size:24px;
 }
