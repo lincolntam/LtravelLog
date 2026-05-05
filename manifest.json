@@ -1,0 +1,32 @@
+{
+  "short_name": "LTravelLog",
+  "name": "LTravelLog - Precision Navigation",
+  "icons": [
+    {
+      "src": "icons/icon-192x192.png",
+      "type": "image/png",
+      "sizes": "192x192",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "icons/icon-512x512.png",
+      "type": "image/png",
+      "sizes": "512x512",
+      "purpose": "any maskable"
+    }
+  ],
+  "start_url": "/index.html",
+  "background_color": "#000000",
+  "display": "standalone",
+  "scope": "/",
+  "theme_color": "#000000",
+  "shortcuts": [
+    {
+      "name": "Open Log",
+      "short_name": "Log",
+      "description": "查看你的行程記錄",
+      "url": "/index.html",
+      "icons": [{ "src": "icons/icon-192x192.png", "sizes": "192x192" }]
+    }
+  ]
+}
