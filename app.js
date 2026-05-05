@@ -7,23 +7,17 @@ let map;
 
 // 1. 從後端 API 獲取配置並加載地圖
 async function initializeApp() {
-    try {
-        // 呼叫 Cloudflare Pages Function 路由
-        const response = await fetch('/api/config');
-        const config = await response.json();
+try {
+        const res = await fetch('/api/config');
+        if (!res.ok) throw new Error("Unauthorized access to config");
+        const config = await res.json();
         
-        if (config.GOOGLE_MAPS_API_KEY) {
-            const script = document.createElement('script');
-            script.src = `https://maps.googleapis.com/maps/api/js?key=${config.GOOGLE_MAPS_API_KEY}&callback=initMap`;
-            script.async = true;
-            script.defer = true;
-            document.head.appendChild(script);
-        } else {
-            throw new Error("API Key not found in config response");
-        }
-    } catch (error) {
-        console.error("Initialization failed:", error);
-        document.getElementById('map').style.backgroundColor = '#1a1a1a';
+        const script = document.createElement('script');
+        script.src = `https://maps.googleapis.com/maps/api/js?key=${config.Maps_API_KEY}&libraries=places&callback=setupGoogleServices`;
+        script.async = true; 
+        document.head.appendChild(script);
+    } catch (e) { 
+        console.error("API Key 載入失敗，請檢查 Cloudflare 環境變數:", e); 
     }
 }
 
