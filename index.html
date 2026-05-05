@@ -3,150 +3,77 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>LTravelLog - Precision Navigation</title>
-    
-    <!-- PWA & iPhone 圖示修復 -->
+    <title>LTravelLog</title>
     <link rel="manifest" href="manifest.json?v=0.40.4">
-    <link rel="apple-touch-icon" href="icons/icon-192x192.png">
+    <link rel="apple-touch-icon" href="icons/icon-192x192.png?v=0.40.4">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="LTravelLog">
-    <meta name="theme-color" content="#000000">
     
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <link rel="stylesheet" href="style.css?v=0.40.4">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-    
-    <script>
-        // 登入狀態檢查
-        if (localStorage.getItem('isLoggedIn') !== 'true') {
-            window.location.href = 'login.html';
-        }
-        
-        function logout() {
-            localStorage.removeItem('isLoggedIn');
-            localStorage.removeItem('userEmail');
-            window.location.href = 'login.html';
-        }
-    </script>
 </head>
 <body>
 
-    <!-- 頂部橫幅 -->
-    <div class="app-banner">
-        <div class="banner-overlay">
-            <h1>LTravelLog</h1>
-            <p>Hong Kong Trip Budgeting & Navigation</p>
+    <div id="map"></div>
+
+    <div class="app-shell">
+        <!-- 步驟 1: 初始狀態 (左側 UI) -->
+        <div id="step-1" class="ui-step active">
+            <div class="glass-sheet">
+                <div class="recent-trips">
+                    <p style="color:gray; font-size:12px; margin-bottom:10px;">Recent Trip</p>
+                    <div class="trip-item"><span class="material-icons">history</span> <span>Central to Mong Kok</span></div>
+                </div>
+                <button class="step-btn-primary" onclick="goToStep(2)">Where you go?</button>
+            </div>
         </div>
-        <button class="logout-btn-top" onclick="logout()">
-            <span class="material-icons">logout</span>
-        </button>
-    </div>
 
-    <div class="app-container">
-        <!-- 1. 行程節點卡片 -->
-        <section class="card">
-            <div class="card-header">
-                <span class="material-icons" style="font-size:14px; color:var(--primary)">place</span>
-                <label>行程節點 (Nodes)</label>
-            </div>
-            <div id="nodes-container">
-                <div class="input-wrapper">
-                    <input class="node-input" placeholder="由哪裡出發？" autocomplete="off" oninput="calculate()">
-                </div>
-                <div class="input-wrapper">
-                    <input class="node-input" placeholder="目的地在哪？" autocomplete="off" oninput="calculate()">
-                </div>
-            </div>
-            <div class="action-row">
-                <button class="secondary-btn" onclick="addNode()">
-                    <span class="material-icons" style="font-size:16px;">add</span> 中途站
-                </button>
-                <button class="secondary-btn" id="retBtn" onclick="toggleReturn()">
-                    <span class="material-icons" style="font-size:16px;">repeat</span> 往返模式
-                </button>
-            </div>
-        </section>
-
-        <!-- 2. 偏好設定卡片 -->
-        <section class="card">
-            <div class="card-header">
-                <span class="material-icons" style="font-size:14px; color:var(--primary)">settings</span>
-                <label>偏好設定 (Settings)</label>
-            </div>
-            <div class="settings-group">
-                <div class="setting-item">
-                    <span>出發時間</span>
-                    <input type="datetime-local" id="start-time" onchange="calculate()">
-                </div>
-                
-                <div class="return-only" style="display: none;">
-                    <div class="setting-item">
-                        <span>回程時間</span>
-                        <input type="datetime-local" id="return-time" onchange="calculate()">
+        <!-- 步驟 2: 偏好設定 (中間 UI) -->
+        <div id="step-2" class="ui-step">
+            <div class="glass-sheet main-sheet">
+                <div class="sheet-handle" onclick="goToStep(1)"></div>
+                <section class="card">
+                    <div id="nodes-container">
+                        <input class="node-input" placeholder="From?" oninput="calculate()">
+                        <input class="node-input" placeholder="To?" oninput="calculate()">
                     </div>
-                </div>
-
-                <div class="setting-item">
-                    <span>能源方案</span>
-                    <!-- ✅ 修復點：統一格式為 "耗電率|單價" 避免 NaN -->
-                    <select id="car-model" onchange="calculate()">
+                </section>
+                <section class="card">
+                    <select id="car-model" class="modern-select" onchange="calculate()">
                         <option value="0.160|1.343">EV 住宅 - 非高峰 ($1.343)</option>
                         <option value="0.160|1.773">EV 住宅 - 高峰 ($1.773)</option>
-                        <option value="0.160|2.430">Tesla Supercharge ($2.4300)</option>
+                        <option value="0.160|2.430">Tesla Supercharge ($2.430)</option>
                     </select>
+                </section>
+                <div id="go-card" class="conditional-show"><div id="goTunnels" class="tunnel-grid"></div></div>
+                <button class="step-btn-primary" onclick="goToStep(3)">Lets Go</button>
+            </div>
+        </div>
+
+        <!-- 步驟 3: 行程總結 (右側 UI) -->
+        <div id="step-3" class="ui-step">
+            <div class="glass-sheet summary-sheet">
+                <div class="summary-header">
+                    <h3>Arriving</h3>
+                    <p>Estimated Budget</p>
                 </div>
+                <div class="stats-row">
+                    <div class="stat-box"><span>Dist</span><b id="km">0.0</b></div>
+                    <div class="stat-box"><span>Time</span><b id="duration">0</b></div>
+                    <div class="stat-box"><span>Tunnels</span><b id="t-fee">$0</b></div>
+                </div>
+                <div class="total-bar">
+                    <span>Total Cost</span>
+                    <span class="price">HK$ <span id="total">0.0</span></span>
+                </div>
+                <button class="cancel-btn" onclick="goToStep(1)">Cancel</button>
             </div>
-        </section>
-
-        <!-- 3. 隧道選擇 -->
-        <section class="card conditional-show" id="go-card">
-            <div class="card-header"><label>去程隧道選擇</label></div>
-            <div class="tunnel-grid" id="goTunnels"></div>
-        </section>
-
-        <section class="card conditional-show" id="back-card">
-            <div class="card-header"><label>回程隧道選擇</label></div>
-            <div class="tunnel-grid" id="backTunnels"></div>
-        </section>
-
-        <!-- 4. 地圖展示 -->
-        <div id="map"></div>
-
-        <!-- 5. 統計數據 -->
-        <section class="stats-grid">
-            <div class="stat-card">
-                <span>總里程</span><b id="km">0.0 <small>km</small></b>
-            </div>
-            <div class="stat-card">
-                <span>總時間</span><b id="duration">0 <small>min</small></b>
-            </div>
-            <div class="stat-card">
-                <span>隧道費</span><b id="t-fee" style="color: var(--primary);">$0</b>
-            </div>
-            <div class="stat-card">
-                <span>能源費</span><b id="e-cost">$0</b>
-            </div>
-        </section>
-
-        <!-- 頁面底部版本號 -->
-        <div style="text-align: center; padding: 20px 0 100px 0; font-size: 10px; color: rgba(255,255,255,0.3); letter-spacing: 1px;">
-            VERSION 0.40.4
         </div>
     </div>
 
-    <!-- 底部導航欄 -->
-    <footer class="bottom-nav">
-        <div class="nav-content">
-            <div class="total-display-group">
-                <div class="label-top">Estimated Total</div>
-                <div class="main-currency">HK$ <span id="total">0.0</span></div>
-            </div>
-            <div class="nav-actions">
-                <button class="primary-btn" onclick="calculate()">UPDATE</button>
-            </div>
-        </div>
-    </footer>
-
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script src="app.js?v=0.40.4"></script>
 </body>
 </html>
