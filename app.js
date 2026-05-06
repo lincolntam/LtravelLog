@@ -1,29 +1,31 @@
-/* LTravelLog - Version 0.44.0 */
+/* LTravelLog - Version 0.45.0 */
 
 let googleMap;
 let directionsService;
 let directionsRenderer;
 let geocoder;
 let activeRoute = null;
+let waypointId = 0;
+
+const FUEL_CAR_COST_PER_KM = 2.25;
 
 const TUNNEL_DATA = [
-    { id: "whc", name: "Western", loc: "Western Harbour Crossing", toll: "harbour" },
-    { id: "cht", name: "Cross", loc: "Cross-Harbour Tunnel", toll: "harbour" },
-    { id: "ehc", name: "Eastern", loc: "Eastern Harbour Crossing", toll: "harbour" },
-    { id: "tlt", name: "Tai Lam", loc: "Tai Lam Tunnel", toll: "tlt" },
-    { id: "smt", name: "Shing Mun", loc: "Shing Mun Tunnels", toll: 5 },
-    { id: "tct", name: "Tate's Cairn", loc: "Tate's Cairn Tunnel", toll: 15 },
-    { id: "tpr", name: "Tai Po", loc: "Tai Po Road", toll: 0 },
-    { id: "lrt", name: "Lion Rock", loc: "Lion Rock Tunnel", toll: 8 },
-    { id: "ent", name: "Eagle's Nest", loc: "Eagle's Nest Tunnel", toll: 8 }
+    { id: "whc", name: "西隧", loc: "Western Harbour Crossing", toll: "harbour" },
+    { id: "cht", name: "紅隧", loc: "Cross-Harbour Tunnel", toll: "harbour" },
+    { id: "ehc", name: "東隧", loc: "Eastern Harbour Crossing", toll: "harbour" },
+    { id: "tlt", name: "大欖", loc: "Tai Lam Tunnel", toll: "tlt" },
+    { id: "smt", name: "城門", loc: "Shing Mun Tunnels", toll: 5 },
+    { id: "tct", name: "大老山", loc: "Tate's Cairn Tunnel", toll: 15 },
+    { id: "tpr", name: "大埔道", loc: "Tai Po Road", toll: 0 },
+    { id: "lrt", name: "獅子山", loc: "Lion Rock Tunnel", toll: 8 },
+    { id: "ent", name: "尖山", loc: "Eagle's Nest Tunnel", toll: 8 }
 ];
 
 const app = document.querySelector(".phone-shell");
 const originInput = document.getElementById("origin-input");
 const destinationInput = document.getElementById("destination-input");
-const calloutDestination = document.getElementById("callout-destination");
-const calloutSubtitle = document.getElementById("callout-subtitle");
 const tripSheet = document.querySelector(".trip-sheet");
+const collapseIcon = document.getElementById("collapse-trip-icon");
 
 async function initApp() {
     bindUi();
@@ -52,18 +54,17 @@ function bindUi() {
     document.getElementById("plan-btn").addEventListener("click", calculateTrip);
     document.getElementById("cancel-btn").addEventListener("click", showSearch);
     document.getElementById("back-btn").addEventListener("click", showSearch);
-    document.getElementById("collapse-trip-btn").addEventListener("click", collapseTripCard);
+    document.getElementById("collapse-trip-btn").addEventListener("click", toggleTripCard);
     document.getElementById("logout-btn").addEventListener("click", logout);
+    document.getElementById("add-waypoint-btn").addEventListener("click", () => addWaypoint());
+    document.getElementById("swap-route-btn").addEventListener("click", swapRoute);
     document.getElementById("car-model").addEventListener("change", () => {
         if (activeRoute) updateTripSummary(activeRoute);
     });
 
-    document.querySelectorAll(".field-location-btn").forEach(button => {
-        button.addEventListener("click", () => useCurrentLocation(button.dataset.target));
-    });
+    bindLocationButtons(document);
 
     [originInput, destinationInput].forEach(input => {
-        input.addEventListener("input", updateCallout);
         input.addEventListener("keydown", event => {
             if (event.key === "Enter") calculateTrip();
         });
@@ -102,7 +103,9 @@ function setupGoogleServices() {
         polylineOptions: { strokeColor: "#18c877", strokeWeight: 6, strokeOpacity: 0.88 }
     });
 
-    [originInput, destinationInput].forEach(input => bindAutocomplete(input));
+    bindAutocomplete(originInput);
+    bindAutocomplete(destinationInput);
+    getWaypointInputs().forEach(bindAutocomplete);
 }
 
 function setupFallbackMap() {
@@ -110,12 +113,19 @@ function setupFallbackMap() {
 }
 
 function bindAutocomplete(input) {
-    if (!window.google?.maps?.places) return;
+    if (!window.google?.maps?.places || input.dataset.autocompleteBound) return;
     const autocomplete = new google.maps.places.Autocomplete(input, {
         componentRestrictions: { country: "hk" },
         fields: ["formatted_address", "geometry", "name"]
     });
-    autocomplete.addListener("place_changed", updateCallout);
+    autocomplete.addListener("place_changed", () => {});
+    input.dataset.autocompleteBound = "true";
+}
+
+function bindLocationButtons(root) {
+    root.querySelectorAll(".field-location-btn").forEach(button => {
+        button.addEventListener("click", () => useCurrentLocation(button.dataset.target));
+    });
 }
 
 function renderTunnelButtons() {
@@ -135,34 +145,73 @@ function renderTunnelButtons() {
     });
 }
 
-function updateCallout() {
-    const destination = destinationInput.value.trim();
-    calloutDestination.textContent = destination || "想去邊？";
-    calloutSubtitle.textContent = originInput.value.trim() || "選擇你的路線";
+function addWaypoint(value = "") {
+    waypointId += 1;
+    const id = `waypoint-${waypointId}`;
+    const row = document.createElement("label");
+    row.className = "waypoint-row";
+    row.innerHTML = `
+        <span>途經點</span>
+        <div class="input-action">
+            <input class="node-input waypoint-input" id="${id}" placeholder="新增途經地點" autocomplete="off">
+            <button class="remove-waypoint-btn" type="button" aria-label="刪除途經點">
+                <span class="material-icons">close</span>
+            </button>
+        </div>
+    `;
+
+    const input = row.querySelector("input");
+    input.value = value;
+    row.querySelector(".remove-waypoint-btn").addEventListener("click", () => {
+        row.remove();
+        if (activeRoute) calculateTrip();
+    });
+
+    document.getElementById("waypoint-list").appendChild(row);
+    bindAutocomplete(input);
+}
+
+function getWaypointInputs() {
+    return Array.from(document.querySelectorAll(".waypoint-input"));
+}
+
+function getWaypointValues() {
+    return getWaypointInputs()
+        .map(input => input.value.trim())
+        .filter(Boolean);
+}
+
+function swapRoute() {
+    const origin = originInput.value;
+    originInput.value = destinationInput.value;
+    destinationInput.value = origin;
 }
 
 async function calculateTrip() {
     const origin = originInput.value.trim();
     const destination = destinationInput.value.trim();
     if (!origin || !destination) {
-        alert("請輸入上車點和目的地。");
+        alert("請輸入出發點和目的地。");
         return;
     }
 
-    calloutDestination.textContent = destination;
-    calloutSubtitle.textContent = "計算中";
-
+    const stagingPosts = getWaypointValues();
     const selectedTunnels = Array.from(document.querySelectorAll(".t-btn.active"))
         .map(button => TUNNEL_DATA.find(tunnel => tunnel.loc === button.dataset.loc))
         .filter(Boolean);
 
-    const route = await getRouteData(origin, destination, selectedTunnels);
-    activeRoute = { ...route, origin, destination, selectedTunnels };
+    const route = await getRouteData(origin, destination, stagingPosts, selectedTunnels);
+    activeRoute = { ...route, origin, destination, stagingPosts, selectedTunnels };
     updateTripSummary(activeRoute);
     showTrip();
 }
 
-async function getRouteData(origin, destination, selectedTunnels) {
+async function getRouteData(origin, destination, stagingPosts, selectedTunnels) {
+    const routeWaypoints = [
+        ...stagingPosts.map(location => ({ location, stopover: true })),
+        ...selectedTunnels.map(tunnel => ({ location: tunnel.loc, stopover: true }))
+    ];
+
     if (!directionsService) {
         return { km: 0, sec: 0, toll: estimateTunnelToll(selectedTunnels), raw: null };
     }
@@ -171,7 +220,7 @@ async function getRouteData(origin, destination, selectedTunnels) {
         directionsService.route({
             origin,
             destination,
-            waypoints: selectedTunnels.map(tunnel => ({ location: tunnel.loc, stopover: true })),
+            waypoints: routeWaypoints,
             travelMode: "DRIVING",
             optimizeWaypoints: false
         }, (response, status) => {
@@ -209,22 +258,37 @@ function updateTripSummary(route) {
     const rate = Number(carConfig[1]);
     const energyCost = route.km * efficiency * rate;
     const total = energyCost + route.toll;
+    const fuelCarCost = route.km * FUEL_CAR_COST_PER_KM + route.toll;
+    const fuelSavings = Math.max(0, fuelCarCost - total);
     const durationMin = Math.round(route.sec / 60);
 
     document.getElementById("arrival-title").textContent = durationMin ? `預計 ${durationMin} 分鐘` : "路線已準備";
     document.getElementById("summary-origin").textContent = route.origin;
     document.getElementById("summary-destination").textContent = route.destination;
+    document.getElementById("summary-waypoints").innerHTML = route.stagingPosts
+        .map((point, index) => `
+            <div class="summary-waypoint">
+                <span class="dot"></span>
+                <div>
+                    <small>途經點 ${index + 1}</small>
+                    <strong>${escapeHtml(point)}</strong>
+                </div>
+            </div>
+        `)
+        .join("");
     document.getElementById("km").textContent = `${route.km.toFixed(1)} km`;
     document.getElementById("duration").textContent = `${durationMin} min`;
     document.getElementById("t-fee").textContent = `$${route.toll}`;
     document.getElementById("e-cost").textContent = `$${energyCost.toFixed(1)}`;
     document.getElementById("compact-total").textContent = total.toFixed(1);
+    document.getElementById("fuel-savings").textContent = fuelSavings.toFixed(1);
 
     if (route.raw && directionsRenderer) directionsRenderer.setDirections(route.raw);
 }
 
 function showTrip() {
     tripSheet.classList.remove("is-compact");
+    collapseIcon.textContent = "expand_more";
     app.dataset.view = "trip";
 }
 
@@ -232,8 +296,9 @@ function showSearch() {
     app.dataset.view = "search";
 }
 
-function collapseTripCard() {
-    tripSheet.classList.add("is-compact");
+function toggleTripCard() {
+    const compact = tripSheet.classList.toggle("is-compact");
+    collapseIcon.textContent = compact ? "expand_less" : "expand_more";
 }
 
 function useCurrentLocation(targetId) {
@@ -262,14 +327,22 @@ function resolveAddress(location, input) {
     const fallback = `${location.lat.toFixed(6)},${location.lng.toFixed(6)}`;
     if (!geocoder) {
         input.value = fallback;
-        updateCallout();
         return;
     }
 
     geocoder.geocode({ location }, (results, status) => {
         input.value = status === "OK" && results?.[0] ? results[0].formatted_address : fallback;
-        updateCallout();
     });
+}
+
+function escapeHtml(value) {
+    return value.replace(/[&<>"']/g, char => ({
+        "&": "&amp;",
+        "<": "&lt;",
+        ">": "&gt;",
+        '"': "&quot;",
+        "'": "&#39;"
+    }[char]));
 }
 
 function logout() {
