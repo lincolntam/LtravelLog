@@ -14,7 +14,7 @@ export async function onRequestPost(context) {
         const email = normalizeEmail(body.email);
         const username = String(body.username || "").trim();
         const password = String(body.password || "");
-        const code = String(body.code || "");
+        const code = String(body.code || "").trim();
         const validCode = env.INVITATION_CODE;
 
         if (!env.DB) {
