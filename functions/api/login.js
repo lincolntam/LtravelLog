@@ -1,61 +1,67 @@
+import {
+    createSessionHeaders,
+    getClientIp,
+    hashPassword,
+    json,
+    normalizeEmail,
+    rateLimit,
+    verifyPassword
+} from "../_utils/auth.js";
+
 export async function onRequestPost(context) {
     const { request, env } = context;
 
     try {
-        // 1. 取得前端傳來的 JSON 資料
-        const { email, password } = await request.json();
+        const body = await request.json();
+        const email = normalizeEmail(body.email);
+        const password = String(body.password || "");
 
-        // 2. 基本欄位檢查
         if (!email || !password) {
-            return new Response(
-                JSON.stringify({ error: "請填寫 Email 和密碼" }), 
-                { status: 400, headers: { "Content-Type": "application/json" } }
-            );
+            return json({ error: "請填寫 Email 和密碼" }, 400);
         }
 
-        // 3. 檢查環境變數中的資料庫是否已綁定 (變數名稱必須為 DB)
         if (!env.DB) {
             console.error("D1 Database binding 'DB' is missing.");
-            return new Response(
-                JSON.stringify({ error: "資料庫連線未設定 (Database binding missing)" }), 
-                { status: 500, headers: { "Content-Type": "application/json" } }
+            return json({ error: "資料庫連線未設定 (Database binding missing)" }, 500);
+        }
+
+        const ip = getClientIp(request);
+        const limit = await rateLimit(env, `login:${ip}:${email}`, 8, 15 * 60);
+        if (!limit.allowed) {
+            return json(
+                { error: "嘗試次數太多，請稍後再試" },
+                429,
+                { "Retry-After": String(limit.retryAfter) }
             );
         }
 
-        // 4. 從 D1 資料庫查詢用戶
         const user = await env.DB.prepare(
             "SELECT * FROM users WHERE email = ?"
         ).bind(email).first();
 
-        // 5. 驗證邏輯
         if (!user) {
-            // 用戶不存在
-            return new Response(
-                JSON.stringify({ error: "找不到此帳戶，請先註冊" }), 
-                { status: 401, headers: { "Content-Type": "application/json" } }
-            );
+            return json({ error: "Email 或密碼不正確" }, 401);
         }
 
-        if (user.password === password) {
-            // 登入成功
-            return new Response(
-                JSON.stringify({ message: "登入成功", status: "success" }), 
-                { status: 200, headers: { "Content-Type": "application/json" } }
-            );
-        } else {
-            // 密碼錯誤
-            return new Response(
-                JSON.stringify({ error: "密碼不正確" }), 
-                { status: 401, headers: { "Content-Type": "application/json" } }
-            );
+        const passwordResult = await verifyPassword(password, user.password);
+        if (!passwordResult.ok) {
+            return json({ error: "Email 或密碼不正確" }, 401);
         }
 
-    } catch (err) {
-        // 捕捉未知的系統錯誤 (例如 JSON 解析失敗或 SQL 報錯)
-        console.error("Login API Error:", err);
-        return new Response(
-            JSON.stringify({ error: "伺服器內部錯誤: " + err.message }), 
-            { status: 500, headers: { "Content-Type": "application/json" } }
+        if (passwordResult.legacy) {
+            const upgradedPassword = await hashPassword(password);
+            await env.DB.prepare(
+                "UPDATE users SET password = ? WHERE id = ?"
+            ).bind(upgradedPassword, user.id).run();
+        }
+
+        return json(
+            { message: "登入成功", status: "success" },
+            200,
+            await createSessionHeaders(email, env)
         );
+    } catch (err) {
+        console.error("Login API Error:", err);
+        return json({ error: "伺服器內部錯誤" }, 500);
     }
 }
