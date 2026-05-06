@@ -1,4 +1,4 @@
-/* * (L)TravelCal - Version 0.41.1 
+/* * (L)TravelCal - Version 0.42.0 
  * Feature: Integrated Deep Black Glass UI & Auth Shield
  */
 
