@@ -1,7 +1,6 @@
 import {
     createSessionHeaders,
     getClientIp,
-    hashPassword,
     json,
     normalizeEmail,
     rateLimit,
@@ -46,13 +45,6 @@ export async function onRequestPost(context) {
         const passwordResult = await verifyPassword(password, user.password);
         if (!passwordResult.ok) {
             return json({ error: "Email 或密碼不正確" }, 401);
-        }
-
-        if (passwordResult.legacy) {
-            const upgradedPassword = await hashPassword(password);
-            await env.DB.prepare(
-                "UPDATE users SET password = ? WHERE id = ?"
-            ).bind(upgradedPassword, user.id).run();
         }
 
         return json(
