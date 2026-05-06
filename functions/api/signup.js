@@ -59,7 +59,7 @@ export async function onRequestPost(context) {
             return json({ error: "Email already registered" }, 409);
         }
 
-        const passwordHash = await hashPassword(password);
+        const passwordHash = await hashPassword(password, env);
         await env.DB.prepare(
             "INSERT INTO users (email, username, password, role) VALUES (?, ?, ?, 'user')"
         ).bind(email, username, passwordHash).run();
