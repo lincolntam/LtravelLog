@@ -1,8 +1,9 @@
-/* LTravelLog - Version 0.43.0 */
+/* LTravelLog - Version 0.44.0 */
 
 let googleMap;
 let directionsService;
 let directionsRenderer;
+let geocoder;
 let activeRoute = null;
 
 const TUNNEL_DATA = [
@@ -22,6 +23,7 @@ const originInput = document.getElementById("origin-input");
 const destinationInput = document.getElementById("destination-input");
 const calloutDestination = document.getElementById("callout-destination");
 const calloutSubtitle = document.getElementById("callout-subtitle");
+const tripSheet = document.querySelector(".trip-sheet");
 
 async function initApp() {
     bindUi();
@@ -50,18 +52,14 @@ function bindUi() {
     document.getElementById("plan-btn").addEventListener("click", calculateTrip);
     document.getElementById("cancel-btn").addEventListener("click", showSearch);
     document.getElementById("back-btn").addEventListener("click", showSearch);
-    document.getElementById("collapse-trip-btn").addEventListener("click", showSearch);
+    document.getElementById("collapse-trip-btn").addEventListener("click", collapseTripCard);
     document.getElementById("logout-btn").addEventListener("click", logout);
     document.getElementById("car-model").addEventListener("change", () => {
         if (activeRoute) updateTripSummary(activeRoute);
     });
 
-    document.querySelectorAll(".recent-row").forEach(button => {
-        button.addEventListener("click", () => {
-            originInput.value = button.dataset.origin || "";
-            destinationInput.value = button.dataset.destination || "";
-            updateCallout();
-        });
+    document.querySelectorAll(".field-location-btn").forEach(button => {
+        button.addEventListener("click", () => useCurrentLocation(button.dataset.target));
     });
 
     [originInput, destinationInput].forEach(input => {
@@ -82,6 +80,7 @@ function setDefaultTime() {
 
 function setupGoogleServices() {
     directionsService = new google.maps.DirectionsService();
+    geocoder = new google.maps.Geocoder();
     googleMap = new google.maps.Map(document.getElementById("map"), {
         zoom: 13,
         center: { lat: 22.3193, lng: 114.1694 },
@@ -138,20 +137,20 @@ function renderTunnelButtons() {
 
 function updateCallout() {
     const destination = destinationInput.value.trim();
-    calloutDestination.textContent = destination || "Where to?";
-    calloutSubtitle.textContent = originInput.value.trim() || "Select your route";
+    calloutDestination.textContent = destination || "想去邊？";
+    calloutSubtitle.textContent = originInput.value.trim() || "選擇你的路線";
 }
 
 async function calculateTrip() {
     const origin = originInput.value.trim();
     const destination = destinationInput.value.trim();
     if (!origin || !destination) {
-        alert("Please enter pick up point and destination.");
+        alert("請輸入上車點和目的地。");
         return;
     }
 
     calloutDestination.textContent = destination;
-    calloutSubtitle.textContent = "Calculating";
+    calloutSubtitle.textContent = "計算中";
 
     const selectedTunnels = Array.from(document.querySelectorAll(".t-btn.active"))
         .map(button => TUNNEL_DATA.find(tunnel => tunnel.loc === button.dataset.loc))
@@ -212,21 +211,66 @@ function updateTripSummary(route) {
     const total = energyCost + route.toll;
     const durationMin = Math.round(route.sec / 60);
 
-    document.getElementById("arrival-title").textContent = durationMin ? `Arriving in ${durationMin} min` : "Route ready";
-    document.getElementById("route-name").textContent = route.destination;
+    document.getElementById("arrival-title").textContent = durationMin ? `預計 ${durationMin} 分鐘` : "路線已準備";
     document.getElementById("summary-origin").textContent = route.origin;
     document.getElementById("summary-destination").textContent = route.destination;
     document.getElementById("km").textContent = `${route.km.toFixed(1)} km`;
     document.getElementById("duration").textContent = `${durationMin} min`;
     document.getElementById("t-fee").textContent = `$${route.toll}`;
     document.getElementById("e-cost").textContent = `$${energyCost.toFixed(1)}`;
-    document.getElementById("total").textContent = total.toFixed(1);
+    document.getElementById("compact-total").textContent = total.toFixed(1);
 
     if (route.raw && directionsRenderer) directionsRenderer.setDirections(route.raw);
 }
 
-function showTrip() { app.dataset.view = "trip"; }
-function showSearch() { app.dataset.view = "search"; }
+function showTrip() {
+    tripSheet.classList.remove("is-compact");
+    app.dataset.view = "trip";
+}
+
+function showSearch() {
+    app.dataset.view = "search";
+}
+
+function collapseTripCard() {
+    tripSheet.classList.add("is-compact");
+}
+
+function useCurrentLocation(targetId) {
+    const input = document.getElementById(targetId);
+    if (!navigator.geolocation) {
+        alert("此瀏覽器不支援目前位置。");
+        return;
+    }
+
+    input.value = "定位中...";
+    navigator.geolocation.getCurrentPosition(
+        position => {
+            const location = { lat: position.coords.latitude, lng: position.coords.longitude };
+            if (googleMap) googleMap.panTo(location);
+            resolveAddress(location, input);
+        },
+        () => {
+            input.value = "";
+            alert("未能取得目前位置，請檢查定位權限。");
+        },
+        { enableHighAccuracy: true, timeout: 10000, maximumAge: 60000 }
+    );
+}
+
+function resolveAddress(location, input) {
+    const fallback = `${location.lat.toFixed(6)},${location.lng.toFixed(6)}`;
+    if (!geocoder) {
+        input.value = fallback;
+        updateCallout();
+        return;
+    }
+
+    geocoder.geocode({ location }, (results, status) => {
+        input.value = status === "OK" && results?.[0] ? results[0].formatted_address : fallback;
+        updateCallout();
+    });
+}
 
 function logout() {
     fetch("/api/logout", { method: "POST" }).finally(() => {
