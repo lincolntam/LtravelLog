@@ -12,6 +12,7 @@ export async function onRequestPost(context) {
     try {
         const body = await request.json();
         const email = normalizeEmail(body.email);
+        const username = String(body.username || "").trim();
         const password = String(body.password || "");
         const code = String(body.code || "");
         const validCode = env.INVITATION_CODE;
@@ -24,8 +25,12 @@ export async function onRequestPost(context) {
             return json({ error: "Server configuration error" }, 500);
         }
 
-        if (!email || !password || !code) {
+        if (!email || !username || !password || !code) {
             return json({ error: "Missing required fields" }, 400);
+        }
+
+        if (username.length < 2 || username.length > 40) {
+            return json({ error: "Username must be 2-40 characters" }, 400);
         }
 
         if (password.length < 8) {
@@ -56,8 +61,8 @@ export async function onRequestPost(context) {
 
         const passwordHash = await hashPassword(password);
         await env.DB.prepare(
-            "INSERT INTO users (email, password) VALUES (?, ?)"
-        ).bind(email, passwordHash).run();
+            "INSERT INTO users (email, username, password, role) VALUES (?, ?, ?, 'user')"
+        ).bind(email, username, passwordHash).run();
 
         return json({ message: "Success" }, 201);
     } catch (e) {

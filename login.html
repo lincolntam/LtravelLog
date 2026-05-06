@@ -7,7 +7,7 @@
     <link rel="manifest" href="manifest.json">
     <link rel="apple-touch-icon" href="icons/icon-192x192.png">
     
-    <link rel="stylesheet" href="login-style.css?v=0.41.1">
+    <link rel="stylesheet" href="login-style.css?v=0.42.0">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <style>
         body { background: #e9e2d7; margin: 0; display: flex; justify-content: center; align-items: center; min-height: 100vh; }
@@ -42,6 +42,7 @@
             </div>
             <h2>Sign up</h2>
             <form id="signup-form">
+                <div class="input-field"><input type="text" id="up-username" placeholder="username" minlength="2" maxlength="40" required></div>
                 <div class="input-field"><input type="email" id="up-email" placeholder="e-mail address" required></div>
                 <div class="input-field"><input type="password" id="up-password" placeholder="create password" required></div>
                 <div class="input-field"><input type="text" id="invitation-code" placeholder="invitation code" required></div>
@@ -54,7 +55,7 @@
 
         <!-- 版本號 (移除黑盒子後放在底部) -->
         <div style="position: fixed; bottom: 15px; width: 100%; text-align: center; font-size: 10px; color: rgba(0,0,0,0.2);">
-            v0.41.1
+            v0.42.0
         </div>
     </div>
 
@@ -80,13 +81,14 @@
 
         document.getElementById('signup-form').onsubmit = async (e) => {
             e.preventDefault();
+            const username = document.getElementById('up-username').value;
             const email = document.getElementById('up-email').value;
             const password = document.getElementById('up-password').value;
             const code = document.getElementById('invitation-code').value;
             const res = await fetch('/api/signup', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ email, password, code })
+                body: JSON.stringify({ username, email, password, code })
             });
             if (res.ok) { alert("註冊成功！"); toggleSection('login'); } else { alert("註冊失敗"); }
         };
