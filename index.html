@@ -5,14 +5,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>LTravelLog</title>
 
-    <link rel="manifest" href="manifest.json?v=0.44.0">
+    <link rel="manifest" href="manifest.json?v=0.45.0">
     <link rel="apple-touch-icon" href="icons/icon-192x192.png">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="LTravelLog">
     <meta name="theme-color" content="#f4f4f2">
 
-    <link rel="stylesheet" href="style.css?v=0.44.0">
+    <link rel="stylesheet" href="style.css?v=0.45.0">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 </head>
 <body>
@@ -21,60 +21,38 @@
         <div class="map-fade"></div>
 
         <header class="top-bar">
-            <button class="icon-btn" id="back-btn" type="button" aria-label="返回">
-                <span class="material-icons">chevron_left</span>
-            </button>
-            <button class="icon-btn" id="menu-btn" type="button" aria-label="選單">
-                <span class="material-icons">menu</span>
-            </button>
+            <button class="icon-btn" id="back-btn" type="button" aria-label="返回"><span class="material-icons">chevron_left</span></button>
+            <button class="icon-btn" id="menu-btn" type="button" aria-label="選單"><span class="material-icons">menu</span></button>
             <div class="screen-title">LTravelLog</div>
-            <button class="icon-btn" id="logout-btn" type="button" aria-label="登出">
-                <span class="material-icons">logout</span>
-            </button>
+            <button class="icon-btn" id="logout-btn" type="button" aria-label="登出"><span class="material-icons">logout</span></button>
         </header>
-
-        <section class="map-callout" aria-live="polite">
-            <span id="callout-destination">想去邊？</span>
-            <small id="callout-subtitle">選擇你的路線</small>
-        </section>
-
-        <div class="map-pin">
-            <span class="material-icons">location_on</span>
-        </div>
-
-        <button class="locate-btn" type="button" aria-label="回到地圖中心">
-            <span class="material-icons">my_location</span>
-        </button>
 
         <section class="bottom-sheet search-sheet" aria-label="規劃路線">
             <div class="sheet-handle"></div>
-
             <div class="route-inputs">
                 <label>
-                    <span>上車點</span>
+                    <span>出發點</span>
                     <div class="input-action">
                         <input class="node-input" id="origin-input" placeholder="輸入地址或使用目前位置" autocomplete="off">
-                        <button class="field-location-btn" type="button" data-target="origin-input" aria-label="使用目前位置作為上車點">
-                            <span class="material-icons">my_location</span>
-                        </button>
+                        <button class="field-location-btn" type="button" data-target="origin-input" aria-label="使用目前位置作為出發點"><span class="material-icons">my_location</span></button>
                     </div>
                 </label>
+                <div id="waypoint-list" class="waypoint-list"></div>
+                <div class="route-tools">
+                    <button class="tool-btn" id="add-waypoint-btn" type="button"><span class="material-icons">add_location_alt</span>新增途經點</button>
+                    <button class="tool-btn" id="swap-route-btn" type="button"><span class="material-icons">swap_vert</span>將起點和目的地對調</button>
+                </div>
                 <label>
                     <span>目的地</span>
                     <div class="input-action">
                         <input class="node-input" id="destination-input" placeholder="你想去邊？" autocomplete="off">
-                        <button class="field-location-btn" type="button" data-target="destination-input" aria-label="使用目前位置作為目的地">
-                            <span class="material-icons">my_location</span>
-                        </button>
+                        <button class="field-location-btn" type="button" data-target="destination-input" aria-label="使用目前位置作為目的地"><span class="material-icons">my_location</span></button>
                     </div>
                 </label>
             </div>
 
             <div class="compact-settings">
-                <label>
-                    <span>出發時間</span>
-                    <input type="datetime-local" id="start-time">
-                </label>
+                <label><span>出發時間</span><input type="datetime-local" id="start-time"></label>
                 <label>
                     <span>能源方案</span>
                     <select id="car-model">
@@ -86,7 +64,7 @@
             </div>
 
             <button class="primary-btn" id="plan-btn" type="button">開始規劃</button>
-            <div class="version-mark">v0.44.0</div>
+            <div class="version-mark">v0.45.0</div>
         </section>
 
         <section class="bottom-sheet trip-sheet" aria-label="路線摘要">
@@ -95,32 +73,17 @@
                     <div class="screen-kicker">路線摘要</div>
                     <h1 id="arrival-title">計算路線中</h1>
                 </div>
-                <button class="icon-btn" id="collapse-trip-btn" type="button" aria-label="收合摘要">
-                    <span class="material-icons">expand_more</span>
-                </button>
+                <button class="icon-btn" id="collapse-trip-btn" type="button" aria-label="收合或展開摘要"><span class="material-icons" id="collapse-trip-icon">expand_more</span></button>
             </div>
 
             <div class="trip-points">
-                <div class="point-row">
-                    <span class="dot"></span>
-                    <div>
-                        <small>上車點</small>
-                        <strong id="summary-origin">-</strong>
-                    </div>
-                </div>
-                <div class="point-row">
-                    <span class="dot"></span>
-                    <div>
-                        <small>目的地</small>
-                        <strong id="summary-destination">-</strong>
-                    </div>
-                </div>
+                <div class="point-row"><span class="dot"></span><div><small>出發點</small><strong id="summary-origin">-</strong></div></div>
+                <div id="summary-waypoints" class="summary-waypoints"></div>
+                <div class="point-row"><span class="dot"></span><div><small>目的地</small><strong id="summary-destination">-</strong></div></div>
             </div>
 
-            <div class="compact-total-row">
-                <span>總額</span>
-                <strong>HK$ <span id="compact-total">0.0</span></strong>
-            </div>
+            <div class="compact-total-row"><span>總額</span><strong>HK$ <span id="compact-total">0.0</span></strong></div>
+            <div class="saving-row"><span>相比燃油車潛在節省</span><strong>HK$ <span id="fuel-savings">0.0</span></strong></div>
 
             <div class="metrics-grid">
                 <div><small>距離</small><strong id="km">0.0 km</strong></div>
@@ -139,6 +102,6 @@
         </section>
     </main>
 
-    <script src="app.js?v=0.44.0"></script>
+    <script src="app.js?v=0.45.0"></script>
 </body>
 </html>
