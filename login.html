@@ -7,7 +7,7 @@
     <link rel="manifest" href="manifest.json">
     <link rel="apple-touch-icon" href="icons/icon-192x192.png">
     
-    <link rel="stylesheet" href="login-style.css?v=0.40.4">
+    <link rel="stylesheet" href="login-style.css?v=0.41.0">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <style>
         body { background: #e9e2d7; margin: 0; display: flex; justify-content: center; align-items: center; min-height: 100vh; }
@@ -54,7 +54,7 @@
 
         <!-- 版本號 (移除黑盒子後放在底部) -->
         <div style="position: fixed; bottom: 15px; width: 100%; text-align: center; font-size: 10px; color: rgba(0,0,0,0.2);">
-            v0.40.4
+            v0.41.0
         </div>
     </div>
 
@@ -68,9 +68,12 @@
             e.preventDefault();
             const email = document.getElementById('login-email').value;
             const password = document.getElementById('login-password').value;
-            const res = await fetch('/api/login', { method: 'POST', body: JSON.stringify({ email, password }) });
+            const res = await fetch('/api/login', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email, password })
+            });
             if (res.ok) {
-                localStorage.setItem('isLoggedIn', 'true');
                 window.location.href = 'index.html';
             } else { alert("登入失敗"); }
         };
@@ -80,7 +83,11 @@
             const email = document.getElementById('up-email').value;
             const password = document.getElementById('up-password').value;
             const code = document.getElementById('invitation-code').value;
-            const res = await fetch('/api/signup', { method: 'POST', body: JSON.stringify({ email, password, code }) });
+            const res = await fetch('/api/signup', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email, password, code })
+            });
             if (res.ok) { alert("註冊成功！"); toggleSection('login'); } else { alert("註冊失敗"); }
         };
     </script>

@@ -1,16 +1,6 @@
-/* * (L)TravelCal - Version 0.40.1 
+/* * (L)TravelCal - Version 0.41.0 
  * Feature: Integrated Deep Black Glass UI & Auth Shield
  */
-
-// 1. 登入防護 (Auth Shield)
-// 在頁面邏輯執行前，立即檢查 localStorage
-(function checkAuth() {
-    const isLoggedIn = localStorage.getItem('isLoggedIn');
-    // 如果未登入且目前不在登入頁面，則強制導回 login.html
-    if (!isLoggedIn && !window.location.href.includes('login.html')) {
-        window.location.href = 'login.html';
-    }
-})();
 
 // 2. 全域變數與隧道數據
 let googleMap, ds, drGo, drBack;
@@ -32,7 +22,11 @@ const TUNNEL_DATA = [
 async function initApp() {
     try {
         const res = await fetch('/api/config');
-        if (!res.ok) throw new Error("Unauthorized access to config");
+        if (res.status === 401) {
+            window.location.href = 'login.html';
+            return;
+        }
+        if (!res.ok) throw new Error("Config loading failed");
         const config = await res.json();
         
         const script = document.createElement('script');
@@ -217,8 +211,10 @@ function toggleReturn() {
 
 // 9. 登出邏輯
 function logout() {
-    localStorage.removeItem('isLoggedIn');
-    window.location.href = 'login.html';
+    fetch('/api/logout', { method: 'POST' }).finally(() => {
+        localStorage.removeItem('isLoggedIn');
+        window.location.href = 'login.html';
+    });
 }
 
 // 啟動應用
