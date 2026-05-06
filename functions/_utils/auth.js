@@ -24,14 +24,31 @@ export function getClientIp(request) {
     return request.headers.get("CF-Connecting-IP") || request.headers.get("X-Forwarded-For") || "unknown";
 }
 
-export async function hashPassword(password) {
+export async function hashPassword(password, env) {
     const salt = crypto.getRandomValues(new Uint8Array(16));
-    const hash = await pbkdf2(password, salt, PBKDF2_ITERATIONS);
-    return `pbkdf2$${PBKDF2_ITERATIONS}$${base64url(salt)}$${base64url(hash)}`;
+    try {
+        const hash = await pbkdf2(password, salt, PBKDF2_ITERATIONS);
+        return `pbkdf2$${PBKDF2_ITERATIONS}$${base64url(salt)}$${base64url(hash)}`;
+    } catch (error) {
+        console.error("PBKDF2 password hashing failed, using HMAC fallback:", error);
+        const hash = await passwordHmac(password, salt, env);
+        return `hmac-sha256$${base64url(salt)}$${base64url(hash)}`;
+    }
 }
 
-export async function verifyPassword(password, storedPassword) {
+export async function verifyPassword(password, storedPassword, env) {
     if (!storedPassword) return { ok: false, legacy: false };
+
+    if (storedPassword.startsWith("hmac-sha256$")) {
+        const parts = storedPassword.split("$");
+        if (parts.length !== 3) return { ok: false, legacy: false };
+
+        const salt = fromBase64url(parts[1]);
+        const expected = fromBase64url(parts[2]);
+        const actual = await passwordHmac(password, salt, env);
+
+        return { ok: timingSafeEqual(actual, expected), legacy: false };
+    }
 
     if (!storedPassword.startsWith("pbkdf2$")) {
         return { ok: storedPassword === password, legacy: true };
@@ -157,6 +174,11 @@ async function hmac(value, secret) {
         ["sign"]
     );
     return new Uint8Array(await crypto.subtle.sign("HMAC", key, encoder.encode(value)));
+}
+
+async function passwordHmac(password, salt, env) {
+    const saltText = base64url(salt);
+    return hmac(`${saltText}.${password}`, getJwtSecret(env));
 }
 
 function getJwtSecret(env) {
