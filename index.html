@@ -3,146 +3,166 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>LTravelLog - Precision Navigation</title>
-    
-    <!-- PWA & iPhone 圖示修復 -->
-    <link rel="manifest" href="manifest.json?v=0.42.2">
+    <title>LTravelLog</title>
+
+    <link rel="manifest" href="manifest.json?v=0.43.0">
     <link rel="apple-touch-icon" href="icons/icon-192x192.png">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="LTravelLog">
-    <meta name="theme-color" content="#000000">
-    
-    <link rel="stylesheet" href="style.css?v=0.42.2">
+    <meta name="theme-color" content="#f4f4f2">
+
+    <link rel="stylesheet" href="style.css?v=0.43.0">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-    
-    <script>
-        async function logout() {
-            await fetch('/api/logout', { method: 'POST' });
-            localStorage.removeItem('isLoggedIn');
-            localStorage.removeItem('userEmail');
-            window.location.href = 'login.html';
-        }
-    </script>
 </head>
 <body>
+    <main class="phone-shell" data-view="search">
+        <div id="map" aria-label="Map"></div>
+        <div class="map-fade"></div>
 
-    <!-- 頂部橫幅 -->
-    <div class="app-banner">
-        <div class="banner-overlay">
-            <h1>LTravelLog</h1>
-            <p>Hong Kong Trip Budgeting & Navigation</p>
-        </div>
-        <button class="logout-btn-top" onclick="logout()">
-            <span class="material-icons">logout</span>
-        </button>
-    </div>
+        <header class="top-bar">
+            <button class="icon-btn" id="back-btn" type="button" aria-label="Back">
+                <span class="material-icons">chevron_left</span>
+            </button>
+            <button class="icon-btn" id="menu-btn" type="button" aria-label="Menu">
+                <span class="material-icons">menu</span>
+            </button>
+            <div class="screen-title">LTravelLog</div>
+            <button class="icon-btn" id="logout-btn" type="button" aria-label="Logout">
+                <span class="material-icons">logout</span>
+            </button>
+        </header>
 
-    <div class="app-container">
-        <!-- 1. 行程節點卡片 -->
-        <section class="card">
-            <div class="card-header">
-                <span class="material-icons" style="font-size:14px; color:var(--primary)">place</span>
-                <label>行程節點 (Nodes)</label>
-            </div>
-            <div id="nodes-container">
-                <div class="input-wrapper">
-                    <input class="node-input" placeholder="由哪裡出發？" autocomplete="off" oninput="calculate()">
-                </div>
-                <div class="input-wrapper">
-                    <input class="node-input" placeholder="目的地在哪？" autocomplete="off" oninput="calculate()">
-                </div>
-            </div>
-            <div class="action-row">
-                <button class="secondary-btn" onclick="addNode()">
-                    <span class="material-icons" style="font-size:16px;">add</span> 中途站
-                </button>
-                <button class="secondary-btn" id="retBtn" onclick="toggleReturn()">
-                    <span class="material-icons" style="font-size:16px;">repeat</span> 往返模式
-                </button>
-            </div>
+        <section class="map-callout" aria-live="polite">
+            <span id="callout-destination">Where to?</span>
+            <small id="callout-subtitle">Select your route</small>
         </section>
 
-        <!-- 2. 偏好設定卡片 -->
-        <section class="card">
-            <div class="card-header">
-                <span class="material-icons" style="font-size:14px; color:var(--primary)">settings</span>
-                <label>偏好設定 (Settings)</label>
+        <div class="map-pin">
+            <span class="material-icons">location_on</span>
+        </div>
+
+        <button class="locate-btn" type="button" aria-label="Center map">
+            <span class="material-icons">my_location</span>
+        </button>
+
+        <section class="bottom-sheet search-sheet" aria-label="Plan trip">
+            <div class="sheet-handle"></div>
+            <div class="recent-block">
+                <div class="eyebrow">Recent trip</div>
+                <button class="recent-row" type="button" data-origin="Beza Building" data-destination="Akangsha Tower">
+                    <span class="dot"></span>
+                    <span>
+                        <strong>Beza Building</strong>
+                        <small>Commercial road, oadis 4526</small>
+                    </span>
+                </button>
+                <button class="recent-row" type="button" data-origin="Akangsha Tower" data-destination="Beza Building">
+                    <span class="dot"></span>
+                    <span>
+                        <strong>Akangsha Tower</strong>
+                        <small>Commercial road, beside hospital 5896</small>
+                    </span>
+                </button>
             </div>
-            <div class="settings-group">
-                <div class="setting-item">
-                    <span>出發時間</span>
-                    <input type="datetime-local" id="start-time" onchange="calculate()">
+
+            <div class="route-inputs">
+                <label>
+                    <span>Pick up</span>
+                    <input class="node-input" id="origin-input" placeholder="Current location or address" autocomplete="off">
+                </label>
+                <label>
+                    <span>Destination</span>
+                    <input class="node-input" id="destination-input" placeholder="Where you go?" autocomplete="off">
+                </label>
+            </div>
+
+            <div class="compact-settings">
+                <label>
+                    <span>Depart</span>
+                    <input type="datetime-local" id="start-time">
+                </label>
+                <label>
+                    <span>Energy</span>
+                    <select id="car-model">
+                        <option value="0.160|1.343">EV Home Off-peak</option>
+                        <option value="0.160|1.773">EV Home Peak</option>
+                        <option value="0.160|2.430">Tesla Supercharge</option>
+                    </select>
+                </label>
+            </div>
+
+            <button class="primary-btn" id="plan-btn" type="button">Where you go?</button>
+            <div class="version-mark">v0.43.0</div>
+        </section>
+
+        <section class="bottom-sheet trip-sheet" aria-label="Trip summary">
+            <div class="sheet-head">
+                <div>
+                    <div class="screen-kicker">Arriving</div>
+                    <h1 id="arrival-title">Calculating route</h1>
                 </div>
-                
-                <div class="return-only" style="display: none;">
-                    <div class="setting-item">
-                        <span>回程時間</span>
-                        <input type="datetime-local" id="return-time" onchange="calculate()">
+                <button class="icon-btn" id="collapse-trip-btn" type="button" aria-label="Edit trip">
+                    <span class="material-icons">expand_more</span>
+                </button>
+            </div>
+
+            <div class="driver-card">
+                <div class="driver-avatar">
+                    <span class="material-icons">directions_car</span>
+                </div>
+                <div>
+                    <strong>LTravelLog</strong>
+                    <small id="route-name">Route planner</small>
+                </div>
+            </div>
+
+            <div class="action-pair">
+                <button type="button"><span class="material-icons">call</span> Call Now</button>
+                <button type="button"><span class="material-icons">chat_bubble_outline</span> Message</button>
+            </div>
+
+            <div class="trip-points">
+                <div class="point-row">
+                    <span class="dot"></span>
+                    <div>
+                        <small>Pick up point</small>
+                        <strong id="summary-origin">-</strong>
                     </div>
                 </div>
-
-                <div class="setting-item">
-                    <span>能源方案</span>
-                    <!-- ✅ 修復點：統一格式為 "耗電率|單價" 避免 NaN -->
-                    <select id="car-model" onchange="calculate()">
-                        <option value="0.160|1.343">EV 住宅 - 非高峰 ($1.343)</option>
-                        <option value="0.160|1.773">EV 住宅 - 高峰 ($1.773)</option>
-                        <option value="0.160|2.430">Tesla Supercharge ($2.4300)</option>
-                    </select>
+                <div class="point-row">
+                    <span class="dot"></span>
+                    <div>
+                        <small>Destination</small>
+                        <strong id="summary-destination">-</strong>
+                    </div>
                 </div>
             </div>
+
+            <div class="metrics-grid">
+                <div><small>Distance</small><strong id="km">0.0 km</strong></div>
+                <div><small>Time</small><strong id="duration">0 min</strong></div>
+                <div><small>Tunnel</small><strong id="t-fee">$0</strong></div>
+                <div><small>Energy</small><strong id="e-cost">$0.0</strong></div>
+            </div>
+
+            <div class="payment-row">
+                <span>Payment</span>
+                <strong>Cash</strong>
+                <span>Amount</span>
+                <strong><span id="total">0.0</span> HKD</strong>
+            </div>
+
+            <details class="tunnel-options">
+                <summary>Route options</summary>
+                <div class="option-label">Outbound tunnels</div>
+                <div class="tunnel-grid" id="goTunnels"></div>
+            </details>
+
+            <button class="primary-btn cancel-btn" id="cancel-btn" type="button">Cancel</button>
         </section>
+    </main>
 
-        <!-- 3. 隧道選擇 -->
-        <section class="card conditional-show" id="go-card">
-            <div class="card-header"><label>去程隧道選擇</label></div>
-            <div class="tunnel-grid" id="goTunnels"></div>
-        </section>
-
-        <section class="card conditional-show" id="back-card">
-            <div class="card-header"><label>回程隧道選擇</label></div>
-            <div class="tunnel-grid" id="backTunnels"></div>
-        </section>
-
-        <!-- 4. 地圖展示 -->
-        <div id="map"></div>
-
-        <!-- 5. 統計數據 -->
-        <section class="stats-grid">
-            <div class="stat-card">
-                <span>總里程</span><b id="km">0.0 <small>km</small></b>
-            </div>
-            <div class="stat-card">
-                <span>總時間</span><b id="duration">0 <small>min</small></b>
-            </div>
-            <div class="stat-card">
-                <span>隧道費</span><b id="t-fee" style="color: var(--primary);">$0</b>
-            </div>
-            <div class="stat-card">
-                <span>能源費</span><b id="e-cost">$0</b>
-            </div>
-        </section>
-
-        <!-- 頁面底部版本號 -->
-        <div style="text-align: center; padding: 20px 0 100px 0; font-size: 10px; color: rgba(255,255,255,0.3); letter-spacing: 1px;">
-            VERSION 0.42.2
-        </div>
-    </div>
-
-    <!-- 底部導航欄 -->
-    <footer class="bottom-nav">
-        <div class="nav-content">
-            <div class="total-display-group">
-                <div class="label-top">Estimated Total</div>
-                <div class="main-currency">HK$ <span id="total">0.0</span></div>
-            </div>
-            <div class="nav-actions">
-                <button class="primary-btn" onclick="calculate()">UPDATE</button>
-            </div>
-        </div>
-    </footer>
-
-    <script src="app.js?v=0.42.2"></script>
+    <script src="app.js?v=0.43.0"></script>
 </body>
 </html>
