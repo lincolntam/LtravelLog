@@ -42,7 +42,7 @@ export async function onRequestPost(context) {
             return json({ error: "Email 或密碼不正確" }, 401);
         }
 
-        const passwordResult = await verifyPassword(password, user.password);
+        const passwordResult = await verifyPassword(password, user.password, env);
         if (!passwordResult.ok) {
             return json({ error: "Email 或密碼不正確" }, 401);
         }
