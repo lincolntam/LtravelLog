@@ -6,23 +6,19 @@
     <title>LTravelLog - Precision Navigation</title>
     
     <!-- PWA & iPhone 圖示修復 -->
-    <link rel="manifest" href="manifest.json?v=0.40.4">
+    <link rel="manifest" href="manifest.json?v=0.41.0">
     <link rel="apple-touch-icon" href="icons/icon-192x192.png">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="LTravelLog">
     <meta name="theme-color" content="#000000">
     
-    <link rel="stylesheet" href="style.css?v=0.40.4">
+    <link rel="stylesheet" href="style.css?v=0.41.0">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     
     <script>
-        // 登入狀態檢查
-        if (localStorage.getItem('isLoggedIn') !== 'true') {
-            window.location.href = 'login.html';
-        }
-        
-        function logout() {
+        async function logout() {
+            await fetch('/api/logout', { method: 'POST' });
             localStorage.removeItem('isLoggedIn');
             localStorage.removeItem('userEmail');
             window.location.href = 'login.html';
@@ -130,7 +126,7 @@
 
         <!-- 頁面底部版本號 -->
         <div style="text-align: center; padding: 20px 0 100px 0; font-size: 10px; color: rgba(255,255,255,0.3); letter-spacing: 1px;">
-            VERSION 0.40.4
+            VERSION 0.41.0
         </div>
     </div>
 
@@ -147,6 +143,6 @@
         </div>
     </footer>
 
-    <script src="app.js?v=0.40.4"></script>
+    <script src="app.js?v=0.41.0"></script>
 </body>
 </html>
