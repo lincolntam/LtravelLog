@@ -534,8 +534,9 @@ button { cursor: pointer; }
 
     .phone-home {
         width: 100%;
-        min-height: 100dvh;
+        min-height: calc(100dvh + env(safe-area-inset-top));
         height: auto;
+        margin-top: calc(-1 * env(safe-area-inset-top));
         border-radius: 0;
         box-shadow: none;
     }
@@ -555,8 +556,9 @@ button { cursor: pointer; }
     .phone-home {
         width: 100%;
         max-width: none;
-        min-height: 100dvh;
+        min-height: calc(100dvh + env(safe-area-inset-top));
         height: auto;
+        margin-top: calc(-1 * env(safe-area-inset-top));
         border-radius: 0;
         box-shadow: none;
     }

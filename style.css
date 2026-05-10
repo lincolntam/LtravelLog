@@ -51,7 +51,8 @@ button { cursor: pointer; }
 
     .phone-shell {
         width: 100vw;
-        height: 100dvh;
+        height: calc(100dvh + env(safe-area-inset-top));
+        margin-top: calc(-1 * env(safe-area-inset-top));
         min-height: 0;
     }
 }
