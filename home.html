@@ -1,120 +1,155 @@
-﻿<!DOCTYPE html>
-<html lang="zh-HK">
+<!doctype html>
+<html lang="zh-Hant">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Home - LTravelLog</title>
-    <meta name="theme-color" content="#aeb4b5">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <link rel="manifest" href="manifest.json?v=0.55.0">
-    <link rel="apple-touch-icon" href="icons/icon-192x192.png">
-    <link rel="stylesheet" href="home-style.css?v=0.55.0">
-    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+
+  <title>LTravelLog - Home</title>
+  <meta name="description" content="LTravelLog - Tesla Smart Route Planner (Hong Kong)" />
+
+  <!-- PWA Manifest (cache busting) -->
+  <link rel="manifest" href="./manifest.json?v=0.55.0">
+
+  <!-- Theme -->
+  <meta name="theme-color" content="#0b0f17" />
+
+  <!-- iOS PWA -->
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="LTravelLog" />
+  <link rel="apple-touch-icon" href="./icons/icon-192.png">
+
+  <!-- Icons -->
+  <link rel="icon" href="./favicon.ico" />
+
+  <!-- Home Styles (cache busting) -->
+  <link rel="stylesheet" href="./home-style.css?v=0.55.0" />
+
+  <!-- Preload background image for smoother first paint -->
+  <link rel="preload" as="image" href="./banner.jpg" />
 </head>
-<body>
-    <main class="pwa-stage">
-        <section class="phone-home" aria-label="LTravelLog home">
-            <div class="home-content">
-                <section class="hero-copy">
-                    <h1>Hello, <span id="home-username">driver</span>. What will you choose today?</h1>
-                </section>
 
-                <nav class="shortcut-strip" aria-label="Quick actions">
-                    <a class="shortcut-card planner-link" href="/route.html">
-                        <span class="material-icons">near_me</span>
-                        Planner
-                    </a>
-                    <a class="shortcut-card" href="tunnel-fee.html">
-                        <span class="material-icons">route</span>
-                        Tunnel
-                    </a>
-                    <a class="shortcut-card" href="charging-fee.html">
-                        <span class="material-icons">ev_station</span>
-                        Charging
-                    </a>
-                </nav>
+<body class="home-page">
+  <div id="app" class="app-shell">
 
-                <section>
-                    <h2 class="section-title">Recommended Tools</h2>
-                    <a class="feature-card planner-link" href="/route.html">
-                        <small>Live route</small>
-                        <div class="feature-row">
-                            <div>
-                                <strong>Trip Cost Planner</strong>
-                                <span>Distance, tunnel fee and EV cost in one route.</span>
-                            </div>
-                            <span class="play-button">
-                                <span class="material-icons">play_arrow</span>
-                            </span>
-                        </div>
-                    </a>
-                </section>
+    <!-- Header -->
+    <header class="home-header">
+      <h1 class="home-title">
+        Hello, lincolntam.<br />
+        What will you choose today?
+      </h1>
 
-                <section class="info-list" aria-label="Information pages">
-                    <a class="info-card" href="tunnel-fee.html">
-                        <span class="info-icon"><span class="material-icons">payments</span></span>
-                        <span class="info-text">
-                            <small>Information</small>
-                            <strong>Tunnel fee</strong>
-                            <span>Time-varying toll and fixed tunnel charges.</span>
-                        </span>
-                        <span class="material-icons">chevron_right</span>
-                    </a>
-                    <a class="info-card" href="charging-fee.html">
-                        <span class="info-icon"><span class="material-icons">bolt</span></span>
-                        <span class="info-text">
-                            <small>Information</small>
-                            <strong>Charging fee</strong>
-                            <span>Charging cost assumptions used by planner.</span>
-                        </span>
-                        <span class="material-icons">chevron_right</span>
-                    </a>
-                </section>
+      <div class="quick-row" aria-label="Quick actions">
+        <button class="quick-btn glass-card" id="btnPlanner" type="button">
+          <span class="quick-icon" aria-hidden="true">🧭</span>
+          <span class="quick-text">Planner</span>
+        </button>
 
-                <nav class="bottom-nav" aria-label="Main navigation">
-                    <a class="bottom-tab active" href="home.html">
-                        <span class="material-icons">home</span>
-                        Home
-                    </a>
-                    <a class="bottom-tab" href="explore.html">
-                        <span class="material-icons">explore</span>
-                        Explore
-                    </a>
-                    <a class="bottom-tab" href="index.html">
-                        <span class="material-icons">person</span>
-                        Info
-                    </a>
-                </nav>
-            </div>
-        </section>
+        <button class="quick-btn glass-card" id="btnTunnel" type="button">
+          <span class="quick-icon" aria-hidden="true">🧲</span>
+          <span class="quick-text">Tunnel</span>
+        </button>
 
-        <aside class="pc-panel" aria-label="Desktop summary">
-            <small>LTravelLog PWA</small>
-                <h2>Mobile-first trip planning, calm on desktop.</h2>
-            <p>On PC, the home page keeps the PWA phone preview beside quick context. On iPhone, it fills the screen without an extra frame.</p>
-            <div class="pc-actions">
-                <a class="planner-link" href="/route.html">Open planner</a>
-                <a href="tunnel-fee.html">Tunnel fee</a>
-                <a href="charging-fee.html">Charging fee</a>
-            </div>
-        </aside>
+        <button class="quick-btn glass-card" id="btnCharging" type="button">
+          <span class="quick-icon" aria-hidden="true">⚡</span>
+          <span class="quick-text">Charging</span>
+        </button>
+      </div>
+    </header>
+
+    <!-- Main -->
+    <main class="home-main" role="main">
+      <h2 class="section-title">Recommended Tools</h2>
+
+      <!-- Featured -->
+      <article class="feature-card glass-card" id="cardTripPlanner" role="button" tabindex="0" aria-label="Trip Cost Planner">
+        <div class="feature-left">
+          <div class="feature-badge">Live route</div>
+          <div class="feature-title">Trip Cost Planner</div>
+          <div class="feature-subtitle">Distance, tunnel fee and EV cost in one route.</div>
+        </div>
+        <div class="feature-right" aria-hidden="true">
+          <div class="feature-dot"></div>
+        </div>
+      </article>
+
+      <!-- Info Cards -->
+      <article class="info-card glass-card" id="cardTunnelFee" role="button" tabindex="0" aria-label="Tunnel fee">
+        <div class="info-left">
+          <div class="info-icon" aria-hidden="true">🧾</div>
+          <div class="info-text">
+            <div class="info-label">Information</div>
+            <div class="info-title">Tunnel fee</div>
+            <div class="info-subtitle">Time-varying toll and fixed tunnel charges.</div>
+          </div>
+        </div>
+        <div class="info-arrow" aria-hidden="true">›</div>
+      </article>
+
+      <article class="info-card glass-card" id="cardChargingFee" role="button" tabindex="0" aria-label="Charging fee">
+        <div class="info-left">
+          <div class="info-icon" aria-hidden="true">🔋</div>
+          <div class="info-text">
+            <div class="info-label">Information</div>
+            <div class="info-title">Charging fee</div>
+            <div class="info-subtitle">Charging cost assumptions used by planner.</div>
+          </div>
+        </div>
+        <div class="info-arrow" aria-hidden="true">›</div>
+      </article>
+
+      <div class="version" id="versionText">v0.55.0</div>
     </main>
-    <script>
-        fetch("/api/config")
-            .then(response => response.ok ? response.json() : null)
-            .then(data => {
-                const username = data?.user?.username || "driver";
-                document.getElementById("home-username").textContent = username;
-            })
-            .catch(() => {});
 
-        document.querySelectorAll(".planner-link").forEach(link => {
-            link.addEventListener("click", event => {
-                event.preventDefault();
-                window.location.href = "/route.html";
-            });
-        });
-    </script>
+    <!-- Bottom Nav -->
+    <nav class="bottom-nav glass-card" aria-label="Bottom navigation">
+      <button class="nav-item active" id="navHome" type="button" aria-label="Home">
+        <span class="nav-icon" aria-hidden="true">⌂</span>
+        <span class="nav-text">Home</span>
+      </button>
+
+      <button class="nav-item" id="navExplore" type="button" aria-label="Explore">
+        <span class="nav-icon" aria-hidden="true">🧭</span>
+        <span class="nav-text">Explore</span>
+      </button>
+
+      <button class="nav-item" id="navInfo" type="button" aria-label="Info">
+        <span class="nav-icon" aria-hidden="true">👤</span>
+        <span class="nav-text">Info</span>
+      </button>
+    </nav>
+  </div>
+
+  <!-- App logic (cache busting) -->
+  <script src="./app.js?v=0.55.0"></script>
+
+  <!-- Minimal navigation wiring (won't break if app.js already handles it) -->
+  <script>
+    (function () {
+      // 如果你 app.js 已有 routing，呢段只會作後備，不會覆蓋你原本邏輯
+      const go = (url) => { try { window.location.href = url; } catch (e) {} };
+
+      const btnPlanner = document.getElementById("btnPlanner");
+      const btnTunnel = document.getElementById("btnTunnel");
+      const btnCharging = document.getElementById("btnCharging");
+      const cardTripPlanner = document.getElementById("cardTripPlanner");
+      const cardTunnelFee = document.getElementById("cardTunnelFee");
+      const cardChargingFee = document.getElementById("cardChargingFee");
+
+      // 你可以按你實際頁面名稱改路徑，例如 planner.html / tunnel.html / charging.html
+      const plannerUrl = "./index.html";     // 例：主 Planner 頁
+      const tunnelUrl  = "./index.html#tunnel";
+      const chargeUrl  = "./index.html#charging";
+
+      if (btnPlanner) btnPlanner.addEventListener("click", () => go(plannerUrl));
+      if (cardTripPlanner) cardTripPlanner.addEventListener("click", () => go(plannerUrl));
+
+      if (btnTunnel) btnTunnel.addEventListener("click", () => go(tunnelUrl));
+      if (cardTunnelFee) cardTunnelFee.addEventListener("click", () => go(tunnelUrl));
+
+      if (btnCharging) btnCharging.addEventListener("click", () => go(chargeUrl));
+      if (cardChargingFee) cardChargingFee.addEventListener("click", () => go(chargeUrl));
+    })();
+  </script>
 </body>
 </html>
