@@ -1,4 +1,4 @@
-﻿/* LTravelLog - Version 0.55.0 */
+﻿/* LTravelLog - Version 0.54.9 */
 
 let googleMap;
 let directionsService;
