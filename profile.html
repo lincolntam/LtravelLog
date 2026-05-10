@@ -1,0 +1,93 @@
+﻿<!DOCTYPE html>
+<html lang="zh-HK">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>Profile - LTravelLog</title>
+    <meta name="theme-color" content="#aeb4b5">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <link rel="stylesheet" href="home-style.css?v=0.54.8">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+</head>
+<body>
+    <main class="pwa-stage">
+        <section class="phone-home profile-page" aria-label="User profile">
+            <div class="home-content profile-content">
+                <header class="page-top">
+                    <a class="round-btn" href="home.html" aria-label="Back"><span class="material-icons">arrow_back</span></a>
+                    <strong>Profile</strong>
+                    <button class="round-btn" id="logout-btn" type="button" aria-label="Logout"><span class="material-icons">logout</span></button>
+                </header>
+
+                <section class="profile-hero">
+                    <div class="profile-avatar"><span id="profile-initial">D</span></div>
+                    <small>Good to see you</small>
+                    <h1 id="profile-name">Driver</h1>
+                    <p id="profile-email">-</p>
+                </section>
+
+                <section class="profile-stats" aria-label="Profile stats">
+                    <div><small>Mode</small><strong>PWA</strong></div>
+                    <div><small>Role</small><strong id="profile-role">User</strong></div>
+                    <div><small>Planner</small><strong>Ready</strong></div>
+                </section>
+
+                <section class="detail-list">
+                    <a class="detail-card profile-link planner-link" href="/route.html">
+                        <span class="material-icons">near_me</span>
+                        <span><strong>Open planner</strong><p>Start route planning with tunnel and charging estimate.</p></span>
+                    </a>
+                    <a class="detail-card profile-link" href="tunnel-fee.html">
+                        <span class="material-icons">payments</span>
+                        <span><strong>Tunnel fee guide</strong><p>Review toll logic before planning.</p></span>
+                    </a>
+                    <a class="detail-card profile-link" href="charging-fee.html">
+                        <span class="material-icons">bolt</span>
+                        <span><strong>Charging fee guide</strong><p>Understand EV cost assumptions.</p></span>
+                    </a>
+                </section>
+
+                <nav class="bottom-nav" aria-label="Main navigation">
+                    <a class="bottom-tab" href="home.html"><span class="material-icons">home</span>Home</a>
+                    <a class="bottom-tab" href="explore.html"><span class="material-icons">explore</span>Explore</a>
+                    <a class="bottom-tab active" href="profile.html"><span class="material-icons">person</span>Profile</a>
+                </nav>
+            </div>
+        </section>
+
+        <aside class="pc-panel">
+            <small>User</small>
+            <h2>Your LTravelLog profile.</h2>
+            <p>Profile keeps account context and shortcuts separate from route planning, matching the PWA home tone.</p>
+        </aside>
+    </main>
+    <script>
+        fetch("/api/config")
+            .then(response => response.ok ? response.json() : null)
+            .then(data => {
+                const user = data?.user || {};
+                const username = user.username || "Driver";
+                document.getElementById("profile-name").textContent = username;
+                document.getElementById("profile-email").textContent = user.email || "-";
+                document.getElementById("profile-role").textContent = user.role || "User";
+                document.getElementById("profile-initial").textContent = username.slice(0, 1).toUpperCase();
+            })
+            .catch(() => {});
+
+        document.getElementById("logout-btn").addEventListener("click", () => {
+            fetch("/api/logout", { method: "POST" }).finally(() => {
+                localStorage.removeItem("ltravellog_session");
+                window.location.href = "login.html";
+            });
+        });
+
+        document.querySelectorAll(".planner-link").forEach(link => {
+            link.addEventListener("click", event => {
+                event.preventDefault();
+                window.location.href = "/route.html";
+            });
+        });
+    </script>
+</body>
+</html>

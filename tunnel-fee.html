@@ -1,0 +1,254 @@
+﻿<!DOCTYPE html>
+<html lang="zh-HK">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>Tunnel Fee - LTravelLog</title>
+    <meta name="theme-color" content="#aeb4b5">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <link rel="stylesheet" href="home-style.css?v=0.54.8">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+</head>
+<body>
+    <main class="pwa-stage">
+        <section class="phone-home info-page" aria-label="Tunnel fee information">
+            <div class="home-content">
+                <header class="page-top">
+                    <a class="round-btn" href="home.html" aria-label="Back"><span class="material-icons">arrow_back</span></a>
+                    <strong>Tunnel Fee</strong>
+                    <a class="round-btn planner-link" href="/route.html" aria-label="Planner"><span class="material-icons">near_me</span></a>
+                </header>
+
+                <section class="info-hero">
+                    <small>Private car</small>
+                    <h1>香港主要隧道私家車收費表。</h1>
+                </section>
+
+                <section class="detail-list">
+                    <article class="detail-card">
+                        <strong>按現在時間計算</strong>
+                        <p>使用你裝置目前時間，即時計算主要收費隧道私家車收費。</p>
+                        <button class="submit-row current-fee-btn" id="show-current-fees" type="button">
+                            <span>顯示現在收費</span>
+                            <i class="material-icons">schedule</i>
+                        </button>
+                    </article>
+
+                    <article class="detail-card fee-table-card current-fee-result" id="current-fee-result">
+                        <strong>現在收費</strong>
+                        <p class="current-fee-meta" id="current-fee-meta">-</p>
+                        <div class="fee-table-wrap">
+                            <table class="fee-table">
+                                <thead>
+                                    <tr><th>隧道</th><th>現在收費</th><th>規則</th></tr>
+                                </thead>
+                                <tbody id="current-fee-body"></tbody>
+                            </table>
+                        </div>
+                    </article>
+
+                    <article class="detail-card fee-table-card">
+                        <strong>固定收費隧道</strong>
+                        <div class="fee-table-wrap">
+                            <table class="fee-table">
+                                <thead>
+                                    <tr><th>隧道 / 路段</th><th>私家車收費</th><th>備註</th></tr>
+                                </thead>
+                                <tbody>
+                                    <tr><td>香港仔隧道</td><td>HK$8</td><td>固定收費</td></tr>
+                                    <tr><td>城門隧道</td><td>HK$8</td><td>固定收費</td></tr>
+                                    <tr><td>獅子山隧道</td><td>HK$8</td><td>固定收費</td></tr>
+                                    <tr><td>尖山 / 沙田嶺 / 大圍隧道</td><td>HK$8</td><td>固定收費</td></tr>
+                                    <tr><td>大老山隧道</td><td>HK$20</td><td>私家車差別收費</td></tr>
+                                    <tr><td>愉景灣隧道連接路</td><td>HK$250</td><td>往愉景灣方向單程收費</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </article>
+
+                    <article class="detail-card fee-table-card">
+                        <strong>三條過海隧道：平日及星期六</strong>
+                        <p>適用於私家車，公眾假期除外；過渡時段每 2 分鐘逐步增減。</p>
+                        <div class="fee-table-wrap">
+                            <table class="fee-table">
+                                <thead>
+                                    <tr><th>時段</th><th>西隧</th><th>紅隧 / 東隧</th></tr>
+                                </thead>
+                                <tbody>
+                                    <tr><td>00:00-07:29</td><td>HK$20</td><td>HK$20</td></tr>
+                                    <tr><td>早上過渡</td><td>07:30-08:07 HK$22-58</td><td>07:30-07:47 HK$22-38</td></tr>
+                                    <tr><td>早上繁忙</td><td>08:08-10:14 HK$60</td><td>07:48-10:14 HK$40</td></tr>
+                                    <tr><td>日間過渡</td><td>10:15-10:42 HK$58-32</td><td>10:15-10:22 HK$38-32</td></tr>
+                                    <tr><td>一般時段</td><td>10:43-16:29 HK$30</td><td>10:23-16:29 HK$30</td></tr>
+                                    <tr><td>黃昏過渡</td><td>16:30-16:57 HK$32-58</td><td>16:30-16:37 HK$32-38</td></tr>
+                                    <tr><td>黃昏繁忙</td><td>16:58-18:59 HK$60</td><td>16:38-18:59 HK$40</td></tr>
+                                    <tr><td>晚上過渡</td><td>19:00-19:37 HK$58-22</td><td>19:00-19:17 HK$38-22</td></tr>
+                                    <tr><td>19:38 / 19:18 後</td><td>HK$20</td><td>HK$20</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </article>
+
+                    <article class="detail-card fee-table-card">
+                        <strong>三條過海隧道：星期日及公眾假期</strong>
+                        <div class="fee-table-wrap">
+                            <table class="fee-table">
+                                <thead>
+                                    <tr><th>時段</th><th>西隧</th><th>紅隧 / 東隧</th></tr>
+                                </thead>
+                                <tbody>
+                                    <tr><td>00:00-10:10</td><td>HK$20</td><td>HK$20</td></tr>
+                                    <tr><td>10:11-10:14</td><td>HK$21-23</td><td>HK$21-23</td></tr>
+                                    <tr><td>10:15-19:14</td><td>HK$25</td><td>HK$25</td></tr>
+                                    <tr><td>19:15-19:18</td><td>HK$23-21</td><td>HK$23-21</td></tr>
+                                    <tr><td>19:19-23:59</td><td>HK$20</td><td>HK$20</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </article>
+
+                    <article class="detail-card fee-table-card">
+                        <strong>大欖隧道：私家車分時段</strong>
+                        <div class="fee-table-wrap">
+                            <table class="fee-table">
+                                <thead>
+                                    <tr><th>日期</th><th>時段</th><th>收費</th></tr>
+                                </thead>
+                                <tbody>
+                                    <tr><td>平日及星期六</td><td>00:00-07:14</td><td>HK$18</td></tr>
+                                    <tr><td>平日及星期六</td><td>07:15-07:40</td><td>HK$19-43</td></tr>
+                                    <tr><td>平日及星期六</td><td>07:41-09:44</td><td>HK$45</td></tr>
+                                    <tr><td>平日及星期六</td><td>09:45-09:58</td><td>HK$43-31</td></tr>
+                                    <tr><td>平日及星期六</td><td>09:59-17:14</td><td>HK$30</td></tr>
+                                    <tr><td>平日及星期六</td><td>17:15-17:28</td><td>HK$31-43</td></tr>
+                                    <tr><td>平日及星期六</td><td>17:29-18:59</td><td>HK$45</td></tr>
+                                    <tr><td>平日及星期六</td><td>19:00-19:25</td><td>HK$43-19</td></tr>
+                                    <tr><td>平日及星期六</td><td>19:26-23:59</td><td>HK$18</td></tr>
+                                    <tr><td>星期日及公眾假期</td><td>全日</td><td>HK$18</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </article>
+
+                    <article class="detail-card">
+                        <strong>資料來源</strong>
+                        <p>
+                            <a class="source-link" href="https://www.td.gov.hk/en/transport_in_hong_kong/tunnels_and_bridges_n/toll_matters/toll_rates_of_road_tunnels_and_lantau_link/index.html">運輸署隧道收費表</a>、
+                            <a class="source-link" href="https://www.td.gov.hk/en/transport_in_hong_kong/tunnels_and_bridges_n/tvt/index.html">三條過海隧道分時段收費</a>、
+                            <a class="source-link" href="https://www.td.gov.hk/en/transport_in_hong_kong/tunnels_and_bridges_n/tlt/index.html">大欖隧道收費方案</a>
+                        </p>
+                    </article>
+                </section>
+
+                <nav class="bottom-nav" aria-label="Main navigation">
+                    <a class="bottom-tab" href="home.html"><span class="material-icons">home</span>Home</a>
+                    <a class="bottom-tab" href="explore.html"><span class="material-icons">explore</span>Explore</a>
+                    <a class="bottom-tab active" href="tunnel-fee.html"><span class="material-icons">payments</span>Fee</a>
+                </nav>
+            </div>
+        </section>
+    </main>
+    <script>
+        document.querySelectorAll(".planner-link").forEach(link => {
+            link.addEventListener("click", event => {
+                event.preventDefault();
+                window.location.href = "/route.html";
+            });
+        });
+
+        const fixedTunnels = [
+            ["香港仔隧道", 8, "固定收費"],
+            ["城門隧道", 8, "固定收費"],
+            ["獅子山隧道", 8, "固定收費"],
+            ["尖山 / 沙田嶺 / 大圍隧道", 8, "固定收費"],
+            ["大老山隧道", 20, "固定收費"],
+            ["愉景灣隧道連接路", 250, "往愉景灣方向"]
+        ];
+
+        function minutesOfDay(date) {
+            return date.getHours() * 60 + date.getMinutes();
+        }
+
+        const hkGeneralHolidays2026 = new Set([
+            "2026-01-01", "2026-02-17", "2026-02-18", "2026-02-19", "2026-04-03",
+            "2026-04-04", "2026-04-06", "2026-04-07", "2026-05-01", "2026-05-25",
+            "2026-06-19", "2026-07-01", "2026-09-26", "2026-10-01", "2026-10-19",
+            "2026-12-25", "2026-12-26"
+        ]);
+
+        function dateKey(date) {
+            const year = date.getFullYear();
+            const month = String(date.getMonth() + 1).padStart(2, "0");
+            const day = String(date.getDate()).padStart(2, "0");
+            return `${year}-${month}-${day}`;
+        }
+
+        function isSundayOrHoliday(date) {
+            return date.getDay() === 0 || hkGeneralHolidays2026.has(dateKey(date));
+        }
+
+        function transition(minutes, start, first, step, stepMinutes = 2) {
+            return first + Math.floor(Math.max(0, minutes - start) / stepMinutes) * step;
+        }
+
+        function harbourFee(tunnel, date) {
+            const m = minutesOfDay(date);
+            const west = tunnel === "西隧";
+            if (isSundayOrHoliday(date)) {
+                if (m <= 610) return { fee: 20, rule: "星期日/公眾假期非繁忙" };
+                if (m <= 614) return { fee: transition(m, 611, 21, 2), rule: "星期日/公眾假期過渡" };
+                if (m <= 1154) return { fee: 25, rule: "星期日/公眾假期一般" };
+                if (m <= 1158) return { fee: transition(m, 1155, 23, -2), rule: "星期日/公眾假期過渡" };
+                return { fee: 20, rule: "星期日/公眾假期非繁忙" };
+            }
+            if (m <= 449) return { fee: 20, rule: "非繁忙" };
+            if (west && m <= 487) return { fee: transition(m, 450, 22, 2), rule: "早上過渡" };
+            if (!west && m <= 467) return { fee: transition(m, 450, 22, 2), rule: "早上過渡" };
+            if (west && m <= 614) return { fee: 60, rule: "早上繁忙" };
+            if (!west && m <= 614) return { fee: 40, rule: "早上繁忙" };
+            if (west && m <= 642) return { fee: transition(m, 615, 58, -2), rule: "日間過渡" };
+            if (!west && m <= 622) return { fee: transition(m, 615, 38, -2), rule: "日間過渡" };
+            if (m <= 989) return { fee: 30, rule: "一般時段" };
+            if (west && m <= 1017) return { fee: transition(m, 990, 32, 2), rule: "黃昏過渡" };
+            if (!west && m <= 997) return { fee: transition(m, 990, 32, 2), rule: "黃昏過渡" };
+            if (west && m <= 1139) return { fee: 60, rule: "黃昏繁忙" };
+            if (!west && m <= 1139) return { fee: 40, rule: "黃昏繁忙" };
+            if (west && m <= 1177) return { fee: transition(m, 1140, 58, -2), rule: "晚上過渡" };
+            if (!west && m <= 1157) return { fee: transition(m, 1140, 38, -2), rule: "晚上過渡" };
+            return { fee: 20, rule: "非繁忙" };
+        }
+
+        function taiLamFee(date) {
+            const m = minutesOfDay(date);
+            if (isSundayOrHoliday(date)) return { fee: 18, rule: "星期日/公眾假期全日固定" };
+            if (m <= 434) return { fee: 18, rule: "非繁忙" };
+            if (m <= 460) return { fee: transition(m, 435, 19, 2), rule: "早上過渡" };
+            if (m <= 584) return { fee: 45, rule: "早上繁忙" };
+            if (m <= 598) return { fee: transition(m, 585, 43, -2), rule: "日間過渡" };
+            if (m <= 1034) return { fee: 30, rule: "一般時段" };
+            if (m <= 1048) return { fee: transition(m, 1035, 31, 2), rule: "黃昏過渡" };
+            if (m <= 1139) return { fee: 45, rule: "黃昏繁忙" };
+            if (m <= 1165) return { fee: transition(m, 1140, 43, -2), rule: "晚上過渡" };
+            return { fee: 18, rule: "非繁忙" };
+        }
+
+        document.getElementById("show-current-fees").addEventListener("click", () => {
+            const now = new Date();
+            const rows = [
+                ["西隧", harbourFee("西隧", now)],
+                ["紅隧", harbourFee("紅隧", now)],
+                ["東隧", harbourFee("東隧", now)],
+                ["大欖隧道", taiLamFee(now)],
+                ...fixedTunnels.map(([name, fee, rule]) => [name, { fee, rule }])
+            ];
+            document.getElementById("current-fee-meta").textContent =
+                `以你裝置現在時間 ${now.toLocaleString("zh-HK", { hour12: false })} 計算。已包括 2026 香港公眾假期；其他年份請以運輸署為準。`;
+            document.getElementById("current-fee-body").innerHTML = rows.map(([name, data]) =>
+                `<tr><td>${name}</td><td>HK$${data.fee}</td><td>${data.rule}</td></tr>`
+            ).join("");
+            document.getElementById("current-fee-result").classList.add("is-visible");
+        });
+    </script>
+</body>
+</html>

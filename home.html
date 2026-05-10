@@ -1,0 +1,120 @@
+﻿<!DOCTYPE html>
+<html lang="zh-HK">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>Home - LTravelLog</title>
+    <meta name="theme-color" content="#aeb4b5">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <link rel="manifest" href="manifest.json?v=0.54.8">
+    <link rel="apple-touch-icon" href="icons/icon-192x192.png">
+    <link rel="stylesheet" href="home-style.css?v=0.54.8">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+</head>
+<body>
+    <main class="pwa-stage">
+        <section class="phone-home" aria-label="LTravelLog home">
+            <div class="home-content">
+                <section class="hero-copy">
+                    <h1>Hello, <span id="home-username">driver</span>. What will you choose today?</h1>
+                </section>
+
+                <nav class="shortcut-strip" aria-label="Quick actions">
+                    <a class="shortcut-card planner-link" href="/route.html">
+                        <span class="material-icons">near_me</span>
+                        Planner
+                    </a>
+                    <a class="shortcut-card" href="tunnel-fee.html">
+                        <span class="material-icons">route</span>
+                        Tunnel
+                    </a>
+                    <a class="shortcut-card" href="charging-fee.html">
+                        <span class="material-icons">ev_station</span>
+                        Charging
+                    </a>
+                </nav>
+
+                <section>
+                    <h2 class="section-title">Recommended Tools</h2>
+                    <a class="feature-card planner-link" href="/route.html">
+                        <small>Live route</small>
+                        <div class="feature-row">
+                            <div>
+                                <strong>Trip Cost Planner</strong>
+                                <span>Distance, tunnel fee and EV cost in one route.</span>
+                            </div>
+                            <span class="play-button">
+                                <span class="material-icons">play_arrow</span>
+                            </span>
+                        </div>
+                    </a>
+                </section>
+
+                <section class="info-list" aria-label="Information pages">
+                    <a class="info-card" href="tunnel-fee.html">
+                        <span class="info-icon"><span class="material-icons">payments</span></span>
+                        <span class="info-text">
+                            <small>Information</small>
+                            <strong>Tunnel fee</strong>
+                            <span>Time-varying toll and fixed tunnel charges.</span>
+                        </span>
+                        <span class="material-icons">chevron_right</span>
+                    </a>
+                    <a class="info-card" href="charging-fee.html">
+                        <span class="info-icon"><span class="material-icons">bolt</span></span>
+                        <span class="info-text">
+                            <small>Information</small>
+                            <strong>Charging fee</strong>
+                            <span>Charging cost assumptions used by planner.</span>
+                        </span>
+                        <span class="material-icons">chevron_right</span>
+                    </a>
+                </section>
+
+                <nav class="bottom-nav" aria-label="Main navigation">
+                    <a class="bottom-tab active" href="home.html">
+                        <span class="material-icons">home</span>
+                        Home
+                    </a>
+                    <a class="bottom-tab" href="explore.html">
+                        <span class="material-icons">explore</span>
+                        Explore
+                    </a>
+                    <a class="bottom-tab" href="profile.html">
+                        <span class="material-icons">person</span>
+                        Info
+                    </a>
+                </nav>
+            </div>
+        </section>
+
+        <aside class="pc-panel" aria-label="Desktop summary">
+            <small>LTravelLog PWA</small>
+                <h2>Mobile-first trip planning, calm on desktop.</h2>
+            <p>On PC, the home page keeps the PWA phone preview beside quick context. On iPhone, it fills the screen without an extra frame.</p>
+            <div class="pc-actions">
+                <a class="planner-link" href="/route.html">Open planner</a>
+                <a href="tunnel-fee.html">Tunnel fee</a>
+                <a href="charging-fee.html">Charging fee</a>
+            </div>
+        </aside>
+    </main>
+    <script>
+        fetch("/api/config")
+            .then(response => response.ok ? response.json() : null)
+            .then(data => {
+                const username = data?.user?.username || "driver";
+                document.getElementById("home-username").textContent = username;
+            })
+            .catch(() => {});
+
+        document.querySelectorAll(".planner-link").forEach(link => {
+            link.addEventListener("click", event => {
+                event.preventDefault();
+                window.location.href = "/route.html";
+            });
+        });
+    </script>
+</body>
+</html>

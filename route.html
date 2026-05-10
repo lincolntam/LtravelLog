@@ -1,0 +1,188 @@
+﻿<!DOCTYPE html>
+<html lang="zh-HK">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>Route - LTravelLog</title>
+
+    <link rel="manifest" href="manifest.json?v=0.54.8">
+    <link rel="apple-touch-icon" href="icons/icon-192x192.png">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="LTravelLog">
+    <meta name="theme-color" content="#aeb4b5">
+
+    <link rel="stylesheet" href="style.css?v=0.54.8">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+</head>
+<body>
+    <main class="phone-shell" data-view="search" data-return-trip="false">
+        <div id="map" aria-label="Map"></div>
+        <div class="map-fade"></div>
+
+        <header class="top-bar">
+            <button class="icon-btn" id="back-btn" type="button" aria-label="返回">
+                <span class="material-icons">chevron_left</span>
+            </button>
+            <button class="icon-btn" id="menu-btn" type="button" aria-label="返回首頁">
+                <span class="material-icons">home</span>
+            </button>
+            <div class="screen-title">LTravelLog</div>
+            <button class="icon-btn" id="logout-btn" type="button" aria-label="登出">
+                <span class="material-icons">logout</span>
+            </button>
+        </header>
+
+        <section class="bottom-sheet search-sheet" aria-label="規劃路線">
+            <div class="sheet-handle"></div>
+
+            <div class="route-inputs">
+                <label>
+                    <span>出發點</span>
+                    <div class="input-action">
+                        <input class="node-input" id="origin-input" placeholder="輸入地址或使用目前位置" autocomplete="off">
+                        <button class="field-location-btn" type="button" data-target="origin-input" aria-label="使用目前位置作為出發點">
+                            <span class="material-icons">my_location</span>
+                        </button>
+                    </div>
+                </label>
+
+                <label>
+                    <span>目的地</span>
+                    <div class="input-action">
+                        <input class="node-input" id="destination-input" placeholder="你想去邊？" autocomplete="off">
+                        <button class="field-location-btn" type="button" data-target="destination-input" aria-label="使用目前位置作為目的地">
+                            <span class="material-icons">my_location</span>
+                        </button>
+                    </div>
+                </label>
+
+                <label class="return-field return-only">
+                    <span>回程目的地</span>
+                    <div class="input-action">
+                        <input class="node-input" id="return-destination-input" placeholder="留空則返回出發點" autocomplete="off">
+                        <button class="field-location-btn" type="button" data-target="return-destination-input" aria-label="使用目前位置作為回程目的地">
+                            <span class="material-icons">my_location</span>
+                        </button>
+                    </div>
+                </label>
+
+                <div id="waypoint-list" class="waypoint-list"></div>
+
+                <div class="route-tools">
+                    <button class="tool-btn" id="add-waypoint-btn" type="button">
+                        <span class="material-icons">add_location_alt</span>
+                        新增途經點
+                    </button>
+                    <button class="tool-btn" id="swap-route-btn" type="button">
+                        <span class="material-icons">swap_vert</span>
+                        將起點和目的地對調
+                    </button>
+                    <button class="tool-btn" id="return-route-btn" type="button">
+                        <span class="material-icons">keyboard_return</span>
+                        加入回程
+                    </button>
+                </div>
+            </div>
+
+            <div class="compact-settings">
+                <label>
+                    <span>出發時間</span>
+                    <input type="datetime-local" id="start-time">
+                </label>
+                <label>
+                    <span>能源方案</span>
+                    <select id="car-model">
+                        <option value="0.160|1.343">家用電 非繁忙</option>
+                        <option value="0.160|1.773">家用電 繁忙</option>
+                        <option value="0.160|2.430">Tesla Supercharge</option>
+                    </select>
+                </label>
+                <label class="toggle-setting">
+                    <span>避開收費路段</span>
+                    <input type="checkbox" id="avoid-tolls">
+                </label>
+            </div>
+
+            <button class="primary-btn" id="plan-btn" type="button">開始規劃</button>
+            <div class="version-mark">v0.54.8</div>
+        </section>
+
+        <section class="bottom-sheet trip-sheet" aria-label="路線摘要">
+            <div class="sheet-head">
+                <div>
+                    <div class="screen-kicker">路線摘要</div>
+                    <h1 id="arrival-title">計算路線中</h1>
+                </div>
+                <button class="icon-btn" id="collapse-trip-btn" type="button" aria-label="收合或展開摘要">
+                    <span class="material-icons" id="collapse-trip-icon">expand_more</span>
+                </button>
+            </div>
+
+            <div class="trip-points">
+                <div class="point-row">
+                    <span class="dot"></span>
+                    <div>
+                        <small>出發點</small>
+                        <strong id="summary-origin">-</strong>
+                    </div>
+                </div>
+                <div id="summary-waypoints" class="summary-waypoints"></div>
+                <div class="point-row">
+                    <span class="dot"></span>
+                    <div>
+                        <small>目的地</small>
+                        <strong id="summary-destination">-</strong>
+                    </div>
+                </div>
+                <div class="point-row return-summary return-only">
+                    <span class="dot"></span>
+                    <div>
+                        <small>回程目的地</small>
+                        <strong id="summary-return-destination">-</strong>
+                    </div>
+                </div>
+            </div>
+
+            <div class="compact-total-row">
+                <span>總額</span>
+                <strong class="amount-value"><span class="currency-mark">HK$</span><span id="compact-total">0.0</span></strong>
+            </div>
+            <div class="saving-row">
+                <span>相比燃油車潛在節省</span>
+                <strong class="amount-value"><span class="currency-mark">HK$</span><span id="fuel-savings">0.0</span></strong>
+            </div>
+
+            <div class="metrics-grid">
+                <div><small>距離</small><strong id="km">0.0 km</strong></div>
+                <div><small>時間</small><strong id="duration">0 min</strong></div>
+                <div><small>隧道費</small><strong id="t-fee">$0</strong></div>
+                <div><small>電費</small><strong id="e-cost">$0.0</strong></div>
+            </div>
+
+            <div class="tunnel-breakdown">
+                <div>
+                    <small>途經隧道</small>
+                    <strong id="tunnel-names">-</strong>
+                </div>
+                <div>
+                    <small>隧道費計算</small>
+                    <strong id="tunnel-calculation">-</strong>
+                </div>
+            </div>
+
+            <details class="tunnel-options">
+                <summary>路線選項</summary>
+                <div class="option-label">去程隧道</div>
+                <div class="tunnel-grid" id="goTunnels"></div>
+                <div class="option-label return-label return-only">回程隧道</div>
+                <div class="tunnel-grid return-tunnels return-only" id="returnTunnels"></div>
+            </details>
+
+            <button class="primary-btn cancel-btn" id="cancel-btn" type="button">取消</button>
+        </section>
+    </main>
+
+    <script src="app.js?v=0.54.8"></script>
+</body>
+</html>

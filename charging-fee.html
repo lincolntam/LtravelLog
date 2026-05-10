@@ -1,0 +1,66 @@
+﻿<!DOCTYPE html>
+<html lang="zh-HK">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>Charging Fee - LTravelLog</title>
+    <meta name="theme-color" content="#aeb4b5">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <link rel="stylesheet" href="home-style.css?v=0.54.8">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+</head>
+<body>
+    <main class="pwa-stage">
+        <section class="phone-home info-page" aria-label="Charging fee information">
+            <div class="home-content">
+                <header class="page-top">
+                    <a class="round-btn" href="home.html" aria-label="Back"><span class="material-icons">arrow_back</span></a>
+                    <strong>Charging Fee</strong>
+                    <a class="round-btn planner-link" href="/route.html" aria-label="Planner"><span class="material-icons">near_me</span></a>
+                </header>
+
+                <section class="info-hero">
+                    <small>Information 02</small>
+                    <h1>充電費由公里、耗電及電價估算。</h1>
+                </section>
+
+                <section class="detail-list">
+                    <article class="detail-card">
+                        <strong>耗電假設</strong>
+                        <p>Planner 以每公里平均耗電量乘以總距離，估算整段行程需要的 kWh。</p>
+                    </article>
+                    <article class="detail-card">
+                        <strong>電價選項</strong>
+                        <p>你可以在路線頁選擇不同充電收費，例如住宅/商場充電或 Tesla Supercharge，用於計算行程電費。</p>
+                    </article>
+                    <article class="detail-card">
+                        <strong>油費比較</strong>
+                        <p>系統會用固定燃油車每公里成本作比較，顯示相對節省金額，方便快速評估一程車的成本。</p>
+                    </article>
+                </section>
+
+                <nav class="bottom-nav" aria-label="Main navigation">
+                    <a class="bottom-tab" href="home.html"><span class="material-icons">home</span>Home</a>
+                    <a class="bottom-tab" href="explore.html"><span class="material-icons">explore</span>Explore</a>
+                    <a class="bottom-tab active" href="charging-fee.html"><span class="material-icons">bolt</span>Charge</a>
+                </nav>
+            </div>
+        </section>
+
+        <aside class="pc-panel">
+            <small>Information</small>
+            <h2>Charging fee estimate.</h2>
+            <p>This page documents the energy-cost assumptions behind LTravelLog before the user enters the planner.</p>
+        </aside>
+    </main>
+    <script>
+        document.querySelectorAll(".planner-link").forEach(link => {
+            link.addEventListener("click", event => {
+                event.preventDefault();
+                window.location.href = "/route.html";
+            });
+        });
+    </script>
+</body>
+</html>

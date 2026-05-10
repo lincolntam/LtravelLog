@@ -1,0 +1,60 @@
+﻿<!DOCTYPE html>
+<html lang="zh-HK">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>Explore - LTravelLog</title>
+    <meta name="theme-color" content="#aeb4b5">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <link rel="stylesheet" href="home-style.css?v=0.54.8">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+</head>
+<body>
+    <main class="pwa-stage">
+        <section class="phone-home info-page" aria-label="Explore">
+            <div class="home-content">
+                <header class="page-top">
+                    <a class="round-btn" href="home.html" aria-label="Back"><span class="material-icons">arrow_back</span></a>
+                    <strong>Explore</strong>
+                    <a class="round-btn planner-link" href="/route.html" aria-label="Planner"><span class="material-icons">near_me</span></a>
+                </header>
+
+                <section class="info-hero">
+                    <small>Choose a tool</small>
+                    <h1>Explore route, tunnel and charging tools.</h1>
+                </section>
+
+                <section class="detail-list">
+                    <a class="detail-card profile-link planner-link" href="/route.html">
+                        <span class="material-icons">route</span>
+                        <span><strong>Route planner</strong><p>Open the original LTravelLog route calculation page.</p></span>
+                    </a>
+                    <a class="detail-card profile-link" href="tunnel-fee.html">
+                        <span class="material-icons">payments</span>
+                        <span><strong>Tunnel fee table</strong><p>Review private-car tunnel tolls before planning.</p></span>
+                    </a>
+                    <a class="detail-card profile-link" href="charging-fee.html">
+                        <span class="material-icons">ev_station</span>
+                        <span><strong>Charging fee</strong><p>Understand EV charging assumptions used in the planner.</p></span>
+                    </a>
+                </section>
+
+                <nav class="bottom-nav" aria-label="Main navigation">
+                    <a class="bottom-tab" href="home.html"><span class="material-icons">home</span>Home</a>
+                    <a class="bottom-tab active" href="explore.html"><span class="material-icons">explore</span>Explore</a>
+                    <a class="bottom-tab" href="profile.html"><span class="material-icons">person</span>Info</a>
+                </nav>
+            </div>
+        </section>
+    </main>
+    <script>
+        document.querySelectorAll(".planner-link").forEach(link => {
+            link.addEventListener("click", event => {
+                event.preventDefault();
+                window.location.href = "/route.html";
+            });
+        });
+    </script>
+</body>
+</html>
