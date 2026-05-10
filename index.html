@@ -1,13 +1,158 @@
-﻿<!DOCTYPE html>
-<html lang="zh-HK">
+<!doctype html>
+<html lang="zh-Hant">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LTravelLog</title>
-    <meta http-equiv="refresh" content="0; url=route.html">
-    <script>window.location.replace("route.html");</script>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+
+  <title>LTravelLog</title>
+  <meta name="description" content="Tesla Smart Route Planner (Hong Kong) - trip cost with tunnel toll + EV charging estimate." />
+
+  <!-- PWA -->
+  <link rel="manifest" href="/manifest.json?v=0.55.0" />
+  <meta name="theme-color" content="#0b0f17" />
+
+  <!-- iOS PWA -->
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="LTravelLog" />
+  <link rel="apple-touch-icon" href="/icons/icon-192.png" />
+
+  <!-- Favicons -->
+  <link rel="icon" href="/favicon.ico" />
+
+  <!-- Styles (cache busting) -->
+  <link rel="stylesheet" href="/style.css?v=0.55.0" />
+
+  <!-- Optional: preloads (speed up background image) -->
+  <link rel="preload" as="image" href="/banner.jpg" />
+
+  <!-- Prevent iOS auto-link styling -->
+  <meta name="format-detection" content="telephone=no" />
 </head>
-<body>
-    <a href="route.html">Open LTravelLog route planner</a>
+
+<body class="pwa-root">
+  <!-- App Shell -->
+  <div id="app" class="app-shell">
+
+    <!-- Header (safe area supported in CSS via env(safe-area-inset-top)) -->
+    <header class="header">
+      <div class="brand-row">
+        <h1 class="headline">
+          Hello, lincolntam.<br />
+          What will you choose today?
+        </h1>
+      </div>
+
+      <nav class="quick-actions" aria-label="Quick actions">
+        <button class="quick-btn glass-card" id="btnPlanner" type="button">
+          <span class="quick-icon" aria-hidden="true">🧭</span>
+          <span class="quick-text">Planner</span>
+        </button>
+
+        <button class="quick-btn glass-card" id="btnTunnel" type="button">
+          <span class="quick-icon" aria-hidden="true">🧲</span>
+          <span class="quick-text">Tunnel</span>
+        </button>
+
+        <button class="quick-btn glass-card" id="btnCharging" type="button">
+          <span class="quick-icon" aria-hidden="true">⚡</span>
+          <span class="quick-text">Charging</span>
+        </button>
+      </nav>
+    </header>
+
+    <!-- Main -->
+    <main class="main" role="main">
+      <section class="section">
+        <h2 class="section-title">Recommended Tools</h2>
+
+        <!-- Big Featured Card -->
+        <article class="feature-card glass-card" id="cardTripPlanner" role="button" tabindex="0" aria-label="Trip Cost Planner">
+          <div class="feature-left">
+            <div class="feature-badge">Live route</div>
+            <div class="feature-title">Trip Cost Planner</div>
+            <div class="feature-subtitle">Distance, tunnel fee and EV cost in one route.</div>
+          </div>
+          <div class="feature-right">
+            <div class="feature-circle" aria-hidden="true"></div>
+          </div>
+        </article>
+
+        <!-- Info Cards -->
+        <article class="info-card glass-card" id="cardTunnelFee" role="button" tabindex="0" aria-label="Tunnel fee">
+          <div class="info-left">
+            <div class="info-icon" aria-hidden="true">🧾</div>
+            <div class="info-text">
+              <div class="info-label">Information</div>
+              <div class="info-title">Tunnel fee</div>
+              <div class="info-subtitle">Time-varying toll and fixed tunnel charges.</div>
+            </div>
+          </div>
+          <div class="info-arrow" aria-hidden="true">›</div>
+        </article>
+
+        <article class="info-card glass-card" id="cardChargingFee" role="button" tabindex="0" aria-label="Charging fee">
+          <div class="info-left">
+            <div class="info-icon" aria-hidden="true">🔋</div>
+            <div class="info-text">
+              <div class="info-label">Information</div>
+              <div class="info-title">Charging fee</div>
+              <div class="info-subtitle">Charging cost assumptions used by planner.</div>
+            </div>
+          </div>
+          <div class="info-arrow" aria-hidden="true">›</div>
+        </article>
+      </section>
+    </main>
+
+    <!-- Bottom Navigation (safe area supported in CSS via env(safe-area-inset-bottom)) -->
+    <nav class="bottom-nav glass-card" aria-label="Bottom navigation">
+      <button class="nav-item active" id="navHome" type="button" aria-label="Home">
+        <span class="nav-icon" aria-hidden="true">⌂</span>
+        <span class="nav-text">Home</span>
+      </button>
+
+      <button class="nav-item" id="navExplore" type="button" aria-label="Explore">
+        <span class="nav-icon" aria-hidden="true">🧭</span>
+        <span class="nav-text">Explore</span>
+      </button>
+
+      <button class="nav-item" id="navInfo" type="button" aria-label="Info">
+        <span class="nav-icon" aria-hidden="true">👤</span>
+        <span class="nav-text">Info</span>
+      </button>
+    </nav>
+  </div>
+
+  <!-- Scripts (cache busting) -->
+  <script src="/app.js?v=0.55.0" defer></script>
+
+  <!-- PWA Service Worker Register (if sw.js exists) -->
+  <script>
+    (function () {
+      if (!("serviceWorker" in navigator)) return;
+
+      window.addEventListener("load", async () => {
+        try {
+          const reg = await navigator.serviceWorker.register("/sw.js?v=0.55.0");
+
+          // Optional: auto reload when update is installed (prevents "stuck on old PWA")
+          reg.addEventListener("updatefound", () => {
+            const worker = reg.installing;
+            if (!worker) return;
+
+            worker.addEventListener("statechange", () => {
+              if (worker.state === "installed" && navigator.serviceWorker.controller) {
+                // New content is available
+                window.location.reload();
+              }
+            });
+          });
+        } catch (e) {
+          console.warn("ServiceWorker registration failed:", e);
+        }
+      });
+    })();
+  </script>
 </body>
 </html>
