@@ -564,7 +564,7 @@ button { cursor: pointer; }
     }
 
     .home-content {
-        padding-top: calc(24px + env(safe-area-inset-top));
+        padding-top: calc(40px + env(safe-area-inset-top));
         padding-bottom: calc(100px + env(safe-area-inset-bottom));
     }
 }
