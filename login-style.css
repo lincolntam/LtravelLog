@@ -4,15 +4,32 @@
     --text-color: #333;
 }
 
+* { box-sizing: border-box; }
+
+html {
+    width: 100%;
+    min-height: 100%;
+    background:
+        linear-gradient(180deg, rgba(233, 226, 215, 0.22), rgba(174, 180, 181, 0.52)),
+        url("banner.jpg") center / cover fixed,
+        #e9e2d7;
+}
+
 body {
     margin: 0;
-    height: 100vh;
+    width: 100%;
+    min-height: 100vh;
+    min-height: 100dvh;
     display: flex;
     align-items: center;
     justify-content: center;
     font-family: -apple-system, sans-serif;
-    background: #e9e2d7;
+    background:
+        linear-gradient(180deg, rgba(233, 226, 215, 0.1), rgba(174, 180, 181, 0.42)),
+        url("banner.jpg") center / cover fixed,
+        #e9e2d7;
     overflow: hidden;
+    padding: calc(20px + env(safe-area-inset-top)) 18px calc(20px + env(safe-area-inset-bottom));
 }
 
 .background-decor .circle {
