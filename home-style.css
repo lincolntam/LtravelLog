@@ -44,8 +44,8 @@ body::before {
     inset: 0;
     z-index: -1;
     background:
-        linear-gradient(180deg, rgba(210, 216, 218, 0.16), rgba(77, 91, 105, 0.26) 38%, rgba(38, 31, 43, 0.7)),
-        url("banner.jpg") center / cover,
+        linear-gradient(180deg, rgba(210, 216, 218, 0.08), rgba(77, 91, 105, 0.18) 38%, rgba(18, 18, 28, 0.58)),
+        url("Tesla.jpg") center center / cover no-repeat,
         #aeb4b5;
 }
 
@@ -545,14 +545,22 @@ button { cursor: pointer; }
 }
 
 @media (max-width: 768px) {
+    body {
+        background: transparent;
+    }
+
+    body::before {
+        background:
+            linear-gradient(180deg, rgba(210, 216, 218, 0.06), rgba(77, 91, 105, 0.16) 38%, rgba(18, 18, 28, 0.58)),
+            url("Tesla.jpg") center center / cover no-repeat,
+            #aeb4b5;
+    }
+
     .pwa-stage {
         min-height: 100dvh;
         display: block;
         padding: 0;
-        background:
-            linear-gradient(180deg, rgba(210, 216, 218, 0.16), rgba(77, 91, 105, 0.26) 38%, rgba(38, 31, 43, 0.7)),
-            url("banner.jpg") center / cover,
-            #aeb4b5;
+        background: transparent;
     }
 
     .phone-home {
@@ -562,6 +570,7 @@ button { cursor: pointer; }
         height: calc(100dvh + env(safe-area-inset-top));
         margin-top: calc(-1 * env(safe-area-inset-top));
         border-radius: 0;
+        background: transparent;
         box-shadow: none;
     }
 
