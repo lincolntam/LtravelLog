@@ -61,6 +61,10 @@ button { cursor: pointer; }
     inset: calc(-1 * env(safe-area-inset-top)) 0 calc(-1 * env(safe-area-inset-bottom)) 0;
     z-index: 0;
     background: #aeb4b5;
+    width: 100%;
+    flex-grow: 1;      /* 呢行好重要：佢會自動「撐開」填滿剩餘嘅空間 */
+    min-height: 300px; /* 俾個基本高度佢，廢事冇內容時變咗 0 */
+    background-color: #e5e5e5; /* 未載入地圖前顯示嘅灰色 */
 }
 
 .map-fade {
