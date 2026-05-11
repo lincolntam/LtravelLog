@@ -58,7 +58,11 @@ button { cursor: pointer; }
 
 #map {
     position: absolute;
-    inset: calc(-1 * env(safe-area-inset-top)) 0 calc(-1 * env(safe-area-inset-bottom)) 0;
+    /* 改用 -1px 或者 0，確保唔會因為 safe-area 嘅計算誤差見到背景色 */
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
     z-index: 0;
     background: #aeb4b5;
 }
