@@ -1,15 +1,15 @@
 ﻿:root {
     --ink: #f8fbff;
     --ink-dark: #18232d;
-    --muted: rgba(255, 255, 255, 0.72);
-    --glass: rgba(255, 255, 255, 0.15);
-    --glass-strong: rgba(255, 255, 255, 0.22);
-    --line: rgba(255, 255, 255, 0.2);
-    --rose: #b86972;
-    --violet: #614f72;
-    --sky: #8098a8;
-    --navy: #1b2835;
-    --shadow: 0 26px 70px rgba(21, 26, 34, 0.32);
+    --muted: rgba(235, 246, 255, 0.74);
+    --glass: rgba(8, 16, 26, 0.42);
+    --glass-strong: rgba(17, 31, 47, 0.56);
+    --line: rgba(198, 226, 255, 0.24);
+    --rose: #6fa8c6;
+    --violet: #102032;
+    --sky: #9fc7df;
+    --navy: #060b12;
+    --shadow: 0 26px 70px rgba(0, 3, 8, 0.58);
     --safe-area-left: 0;
     --safe-area-right: 0;
     --safe-area-top: 0;
@@ -25,9 +25,9 @@ html, body {
 }
 html {
     background:
-        linear-gradient(180deg, rgba(210, 216, 218, 0.08), rgba(77, 91, 105, 0.18) 38%, rgba(18, 18, 28, 0.58)),
-        url("Tesla.jpg") center center / cover no-repeat,
-        #0f1118;
+        linear-gradient(180deg, rgba(0, 4, 10, 0.04), rgba(7, 14, 23, 0.2) 34%, rgba(0, 2, 7, 0.74)),
+        url("tesla-black.jpg") center center / cover no-repeat,
+        #02050a;
 }
 
 body {
@@ -36,11 +36,11 @@ body {
     min-height: 100dvh;
     color: var(--ink);
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-    background-color: #0f1118;
+    background-color: #02050a;
     background:
-        radial-gradient(circle at 22% 16%, rgba(255, 255, 255, 0.22), transparent 32%),
-        radial-gradient(circle at 80% 4%, rgba(128, 152, 168, 0.36), transparent 34%),
-        linear-gradient(145deg, #d9d6cf 0%, #aeb4b5 42%, #637484 100%);
+        radial-gradient(circle at 50% 35%, rgba(130, 180, 206, 0.24), transparent 36%),
+        radial-gradient(circle at 78% 6%, rgba(169, 218, 255, 0.16), transparent 34%),
+        linear-gradient(145deg, #03060b 0%, #07101a 44%, #010307 100%);
 }
 
 body::before {
@@ -49,9 +49,9 @@ body::before {
     inset: calc(-1 * env(safe-area-inset-top)) 0 calc(-1 * env(safe-area-inset-bottom)) 0;
     z-index: -1;
     background:
-        linear-gradient(180deg, rgba(210, 216, 218, 0.08), rgba(77, 91, 105, 0.18) 38%, rgba(18, 18, 28, 0.58)),
-        url("Tesla.jpg") center center / cover no-repeat,
-        #0f1118;
+        linear-gradient(180deg, rgba(0, 4, 10, 0.04), rgba(7, 14, 23, 0.2) 34%, rgba(0, 2, 7, 0.74)),
+        url("tesla-black.jpg") center center / cover no-repeat,
+        #02050a;
 }
 
 button, a { font: inherit; }
@@ -74,8 +74,8 @@ button { cursor: pointer; }
     overflow: auto;
     border-radius: 34px;
     background:
-        linear-gradient(180deg, rgba(210, 216, 218, 0.12), rgba(77, 91, 105, 0.24) 36%, rgba(38, 31, 43, 0.66)),
-        url("banner.jpg") center / cover;
+        linear-gradient(180deg, rgba(8, 20, 32, 0.26), rgba(5, 9, 16, 0.74)),
+        url("tesla-black.jpg") center / cover;
     box-shadow: var(--shadow);
     isolation: isolate;
 }
@@ -96,9 +96,9 @@ button { cursor: pointer; }
     inset: 0;
     z-index: -1;
     background:
-        linear-gradient(180deg, rgba(33, 44, 57, 0.08), rgba(25, 27, 38, 0.34)),
-        radial-gradient(circle at 22% 65%, rgba(226, 127, 142, 0.26), transparent 35%);
-    backdrop-filter: blur(1px);
+        linear-gradient(180deg, rgba(215, 237, 255, 0.03), rgba(5, 8, 15, 0.28)),
+        radial-gradient(circle at 50% 36%, rgba(135, 194, 224, 0.18), transparent 34%);
+    backdrop-filter: blur(1.5px);
 }
 
 .home-content {
@@ -145,7 +145,9 @@ button { cursor: pointer; }
     min-height: 70px;
     border: 1px solid var(--line);
     border-radius: 16px;
-    background: rgba(255, 255, 255, 0.14);
+    background:
+        linear-gradient(145deg, rgba(255, 255, 255, 0.18), rgba(115, 166, 197, 0.08)),
+        rgba(5, 12, 20, 0.34);
     color: #fff;
     display: grid;
     place-items: center;
@@ -154,7 +156,8 @@ button { cursor: pointer; }
     text-align: center;
     font-size: 11px;
     font-weight: 800;
-    backdrop-filter: blur(16px);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.28), 0 18px 34px rgba(0, 3, 8, 0.24);
+    backdrop-filter: blur(22px) saturate(1.35);
 }
 
 .shortcut-card .material-icons {
@@ -163,7 +166,7 @@ button { cursor: pointer; }
     border-radius: 50%;
     display: grid;
     place-items: center;
-    background: rgba(255, 255, 255, 0.18);
+    background: rgba(226, 244, 255, 0.14);
     font-size: 17px;
 }
 
@@ -179,13 +182,14 @@ button { cursor: pointer; }
     border: 1px solid var(--line);
     border-radius: 24px;
     background:
-        linear-gradient(135deg, rgba(255, 149, 151, 0.52), rgba(60, 54, 82, 0.58)),
-        radial-gradient(circle at 70% 22%, rgba(255, 255, 255, 0.26), transparent 28%);
+        radial-gradient(circle at 83% 24%, rgba(224, 244, 255, 0.32), transparent 17%),
+        linear-gradient(135deg, rgba(136, 186, 210, 0.34), rgba(6, 13, 24, 0.66)),
+        rgba(6, 13, 24, 0.34);
     display: grid;
     align-content: end;
     padding: 16px;
-    box-shadow: 0 18px 38px rgba(29, 30, 43, 0.22);
-    backdrop-filter: blur(16px);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.26), 0 24px 46px rgba(0, 3, 9, 0.42);
+    backdrop-filter: blur(24px) saturate(1.45);
 }
 
 .feature-card small,
@@ -223,8 +227,8 @@ button { cursor: pointer; }
     border-radius: 50%;
     display: grid;
     place-items: center;
-    background: rgba(255, 255, 255, 0.84);
-    color: #332733;
+    background: rgba(240, 248, 255, 0.86);
+    color: #07101a;
 }
 
 .info-list {
@@ -236,13 +240,16 @@ button { cursor: pointer; }
     min-height: 76px;
     border: 1px solid var(--line);
     border-radius: 19px;
-    background: rgba(255, 255, 255, 0.14);
+    background:
+        linear-gradient(145deg, rgba(255, 255, 255, 0.16), rgba(119, 173, 206, 0.08)),
+        rgba(5, 11, 19, 0.46);
     display: grid;
     grid-template-columns: 44px 1fr 30px;
     align-items: center;
     gap: 12px;
     padding: 12px;
-    backdrop-filter: blur(16px);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.22), 0 18px 34px rgba(0, 3, 8, 0.26);
+    backdrop-filter: blur(24px) saturate(1.35);
 }
 
 .info-icon {
@@ -251,7 +258,7 @@ button { cursor: pointer; }
     border-radius: 15px;
     display: grid;
     place-items: center;
-    background: rgba(255, 255, 255, 0.18);
+    background: rgba(226, 244, 255, 0.13);
 }
 
 .info-icon .material-icons,
@@ -271,11 +278,14 @@ button { cursor: pointer; }
     height: 66px;
     border: 1px solid var(--line);
     border-radius: 22px;
-    background: rgba(27, 34, 45, 0.28);
+    background:
+        linear-gradient(145deg, rgba(255, 255, 255, 0.12), rgba(103, 151, 184, 0.06)),
+        rgba(3, 8, 15, 0.64);
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     align-items: center;
-    backdrop-filter: blur(18px);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2), 0 22px 46px rgba(0, 3, 8, 0.46);
+    backdrop-filter: blur(28px) saturate(1.45);
     position: fixed;
     left: 18px;
     right: 18px;
@@ -552,9 +562,9 @@ button { cursor: pointer; }
 @media (max-width: 768px) {
     html {
         background:
-            linear-gradient(180deg, rgba(210, 216, 218, 0.06), rgba(77, 91, 105, 0.16) 38%, rgba(18, 18, 28, 0.58)),
-            url("Tesla.jpg") center center / cover no-repeat,
-            #0f1118;
+            linear-gradient(180deg, rgba(0, 4, 10, 0.04), rgba(7, 14, 23, 0.18) 34%, rgba(0, 2, 7, 0.74)),
+            url("tesla-black.jpg") center center / cover no-repeat,
+            #02050a;
     }
 
     body {
@@ -563,9 +573,9 @@ button { cursor: pointer; }
 
     body::before {
         background:
-            linear-gradient(180deg, rgba(210, 216, 218, 0.06), rgba(77, 91, 105, 0.16) 38%, rgba(18, 18, 28, 0.58)),
-            url("Tesla.jpg") center center / cover no-repeat,
-            #0f1118;
+            linear-gradient(180deg, rgba(0, 4, 10, 0.04), rgba(7, 14, 23, 0.18) 34%, rgba(0, 2, 7, 0.74)),
+            url("tesla-black.jpg") center center / cover no-repeat,
+            #02050a;
     }
 
     .pwa-stage {
