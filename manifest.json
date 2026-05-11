@@ -16,10 +16,10 @@
     }
   ],
   "start_url": "/home.html",
-  "background_color": "#aeb4b5",
+  "background_color": "#0f1118",
   "display": "standalone",
   "scope": "/",
-  "theme_color": "#aeb4b5",
+  "theme_color": "#0f1118",
   "shortcuts": [
     {
       "name": "Open Log",

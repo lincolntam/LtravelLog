@@ -21,9 +21,9 @@ html, body {
 }
 html {
     background:
-        linear-gradient(180deg, rgba(210, 216, 218, 0.16), rgba(77, 91, 105, 0.26) 38%, rgba(38, 31, 43, 0.7)),
-        url("banner.jpg") center / cover fixed,
-        #aeb4b5;
+        linear-gradient(180deg, rgba(210, 216, 218, 0.08), rgba(77, 91, 105, 0.18) 38%, rgba(18, 18, 28, 0.58)),
+        url("Tesla.jpg") center center / cover no-repeat,
+        #0f1118;
 }
 
 body {
@@ -32,6 +32,7 @@ body {
     min-height: 100dvh;
     color: var(--ink);
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    background-color: #0f1118;
     background:
         radial-gradient(circle at 22% 16%, rgba(255, 255, 255, 0.22), transparent 32%),
         radial-gradient(circle at 80% 4%, rgba(128, 152, 168, 0.36), transparent 34%),
@@ -41,12 +42,12 @@ body {
 body::before {
     content: "";
     position: fixed;
-    inset: 0;
+    inset: calc(-1 * env(safe-area-inset-top)) 0 calc(-1 * env(safe-area-inset-bottom)) 0;
     z-index: -1;
     background:
         linear-gradient(180deg, rgba(210, 216, 218, 0.08), rgba(77, 91, 105, 0.18) 38%, rgba(18, 18, 28, 0.58)),
         url("Tesla.jpg") center center / cover no-repeat,
-        #aeb4b5;
+        #0f1118;
 }
 
 button, a { font: inherit; }
@@ -536,8 +537,8 @@ button { cursor: pointer; }
 
     .phone-home {
         width: 100%;
-        min-height: calc(100dvh + env(safe-area-inset-top));
-        height: calc(100dvh + env(safe-area-inset-top));
+        min-height: calc(100dvh + env(safe-area-inset-top) + env(safe-area-inset-bottom));
+        height: calc(100dvh + env(safe-area-inset-top) + env(safe-area-inset-bottom));
         margin-top: calc(-1 * env(safe-area-inset-top));
         border-radius: 0;
         box-shadow: none;
@@ -545,6 +546,13 @@ button { cursor: pointer; }
 }
 
 @media (max-width: 768px) {
+    html {
+        background:
+            linear-gradient(180deg, rgba(210, 216, 218, 0.06), rgba(77, 91, 105, 0.16) 38%, rgba(18, 18, 28, 0.58)),
+            url("Tesla.jpg") center center / cover no-repeat,
+            #0f1118;
+    }
+
     body {
         background: transparent;
     }
@@ -553,11 +561,11 @@ button { cursor: pointer; }
         background:
             linear-gradient(180deg, rgba(210, 216, 218, 0.06), rgba(77, 91, 105, 0.16) 38%, rgba(18, 18, 28, 0.58)),
             url("Tesla.jpg") center center / cover no-repeat,
-            #aeb4b5;
+            #0f1118;
     }
 
     .pwa-stage {
-        min-height: 100dvh;
+        min-height: calc(100dvh + env(safe-area-inset-bottom));
         display: block;
         padding: 0;
         background: transparent;
@@ -566,8 +574,8 @@ button { cursor: pointer; }
     .phone-home {
         width: 100%;
         max-width: none;
-        min-height: calc(100dvh + env(safe-area-inset-top));
-        height: calc(100dvh + env(safe-area-inset-top));
+        min-height: calc(100dvh + env(safe-area-inset-top) + env(safe-area-inset-bottom));
+        height: calc(100dvh + env(safe-area-inset-top) + env(safe-area-inset-bottom));
         margin-top: calc(-1 * env(safe-area-inset-top));
         border-radius: 0;
         background: transparent;
