@@ -58,21 +58,28 @@ button { cursor: pointer; }
 
 #map {
     position: absolute;
-    /* 改用 -1px 或者 0，確保唔會因為 safe-area 嘅計算誤差見到背景色 */
+    /* 直接鋪滿，不要讓它減去 safe-area，地圖應該延伸到最底 */
     top: 0;
     left: 0;
     right: 0;
     bottom: 0;
     z-index: 0;
-    background: #aeb4b5;
+    background: #aeb4b5; /* 地圖未出的佔位色 */
 }
 
 .map-fade {
+    /* 同樣直接鋪滿 */
     position: absolute;
-    inset: calc(-1 * env(safe-area-inset-top)) 0 calc(-1 * env(safe-area-inset-bottom)) 0;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
     z-index: 1;
     pointer-events: none;
-    background: linear-gradient(to bottom, rgba(174,180,181,0.02), rgba(174,180,181,0.05) 36%, rgba(45,35,52,0.34));
+    /* 調整你的漸變，確保底部夠深，可以遮住地圖與底部 Sheet 的銜接位 */
+    background: linear-gradient(to bottom, 
+        rgba(174, 180, 181, 0) 0%, 
+        rgba(45, 35, 52, 0.4) 100%);
 }
 
 .top-bar {
