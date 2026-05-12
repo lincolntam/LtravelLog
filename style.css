@@ -15,7 +15,6 @@ html, body {
     min-height: 100%;
     margin: 0;
     padding: 0;
-    background: #aeb4b5;
     overflow: hidden;
 }
 body {
@@ -24,6 +23,7 @@ body {
     color: var(--ink);
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
     overflow: hidden;
+    background: transparent;
 }
 button, input, select { font: inherit; }
 button { cursor: pointer; }
