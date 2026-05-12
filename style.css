@@ -55,7 +55,10 @@ button { cursor: pointer; }
 
 @media (max-width: 768px) {
     body {
-        background: #aeb4b5;
+        background:
+            linear-gradient(180deg, rgba(0, 4, 10, 0.04), rgba(7, 14, 23, 0.2) 34%, rgba(0, 2, 7, 0.74)),
+            url("tesla-black.jpg") center center / cover no-repeat,
+            #02050a;
     }
 
     .phone-shell {
