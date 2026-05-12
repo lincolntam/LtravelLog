@@ -29,7 +29,9 @@ button, input, select { font: inherit; }
 button { cursor: pointer; }
 
 .phone-shell {
-    position: relative;
+    position: fixed;
+    top: 0;
+    left: 0;
     width: 100vw;
     height: 100vh;
     height: 100dvh;
@@ -542,8 +544,10 @@ button { cursor: pointer; }
 }
 
 @media (min-width: 520px) and (max-width: 767px) {
-    body { display: grid; place-items: center; padding: 22px; }
+    body { display: grid; place-items: center; padding: 22px; background: #f7f8f5; }
     .phone-shell {
+        position: relative;
+        width: auto;
         height: 860px;
         border-radius: 34px;
         box-shadow: 0 28px 80px rgba(36, 42, 46, 0.24);
@@ -565,6 +569,7 @@ button { cursor: pointer; }
     }
 
     .phone-shell {
+        position: relative;
         width: 100vw;
         height: 100vh;
         max-width: none;
