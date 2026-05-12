@@ -641,3 +641,61 @@ button { cursor: pointer; }
         bottom: 48px;
     }
 }
+
+/* =========================================
+   Anti Grey Gap Patch (add to end of style.css)
+   ========================================= */
+
+/* 1) 如果有露底，底色都用深色（避免灰） */
+html, body {
+  background: #000;
+  height: 100%;
+  margin: 0;
+}
+
+/* 2) 鎖定 shell 係「視覺 viewport」高度，避免 iOS 地址列伸縮露底 */
+.phone-shell {
+  height: 100vh;    /* fallback */
+  height: 100svh;   /* stable viewport height (mobile) */
+  height: 100dvh;   /* dynamic viewport height (modern) */
+
+  /* 如你想保留 desktop phone frame，可保留 max-width；
+     但不要再 cap 920px 高度，否則大屏會有多餘空間 */
+  width: 100vw;
+  max-width: 430px;
+
+  background: #000;
+}
+
+/* 3) 地圖一定鋪滿 shell */
+#map {
+  inset: 0 !important;     /* 取消你而家負 safe-area inset，避免奇怪裁切 */
+  width: 100%;
+  height: 100%;
+  background: #000;
+}
+
+/* 4) fade layer 同步鋪滿 */
+.map-fade {
+  inset: 0 !important;
+}
+
+/* 5) 你 bottom sheet 的 max-height 亦改用 dvh/svh，基準一致 */
+.search-sheet {
+  max-height: calc(100vh - 112px);
+  max-height: calc(100svh - 112px);
+  max-height: calc(100dvh - 112px);
+}
+
+@media (max-height: 720px) {
+  .trip-sheet {
+    max-height: calc(100vh - 110px);
+    max-height: calc(100svh - 110px);
+    max-height: calc(100dvh - 110px);
+  }
+}
+
+/* 6) 防止 iOS 橡皮筋下拉露底 */
+body, .phone-shell {
+  overscroll-behavior: none;
+}
