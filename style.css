@@ -643,60 +643,67 @@ button { cursor: pointer; }
 }
 
 /* =========================
-   Fix: iOS 底部灰邊 + Map 消失
-   放到 style.css 最底
+   PWA Standalone Fix (iOS/Android)
    ========================= */
 
-/* 1) 先確保頁面本身唔會露底色 */
+:root {
+  --app-height: 100dvh; /* fallback */
+}
+
+/* 避免露底時見到灰 */
 html, body {
-  margin: 0;
-  padding: 0;
   height: 100%;
-  background: #000; /* 如果 map 真係未覆蓋到，至少唔係灰 */
-}
-
-/* 2) 手機高度用 dvh/svh，避免 iOS 100vh bug */
-.phone-shell {
-  width: 100vw;
-  height: 100vh;
-  height: 100svh;   /* iOS/Android stable viewport */
-  height: 100dvh;   /* modern dynamic viewport */
-  max-width: none;  /* ✅ 關鍵：唔好喺全域 cap 430px，留返俾 desktop media */
+  margin: 0;
   background: #000;
+  overflow: hidden;
 }
 
-/* 3) Map 一定要有明確尺寸（否則 Google Map 會白屏=消失） */
-#map {
+/* 讓主容器完全跟隨「真實可視高度」 */
+.phone-shell {
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: var(--app-height);
+  max-width: none;     /* PWA 通常係全屏，唔好再 cap 430px */
+  min-height: 0;
+  margin: 0;
+  background: #000;
+  overflow: hidden;
+}
+
+/* Map 永遠填滿 shell */
+#map, .map-fade {
   position: absolute;
-  inset: 0 !important; /* ✅ 關鍵：唔好用負 safe-area inset */
+  inset: 0 !important;     /* 取消你原本負 safe-area inset，避免計算怪 */
   width: 100%;
   height: 100%;
   background: #000;
-  z-index: 0;
 }
 
-/* 4) Fade layer 同步鋪滿 */
-.map-fade {
-  inset: 0 !important;
-}
-
-/* 5) Safe-area 應該由 UI 食，而唔係 map */
+/* UI 用 padding 去食 safe-area，而唔好用 map 的 inset 做負數 */
 .top-bar {
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  z-index: 5;
   padding-top: calc(16px + env(safe-area-inset-top));
 }
 
 .bottom-sheet {
-  bottom: calc(18px + env(safe-area-inset-bottom));
+  z-index: 6;
+  padding-bottom: env(safe-area-inset-bottom);
 }
 
-/* 6) sheet max-height 用 svh/dvh，基準一致，避免底部露縫 */
+/* Bottom sheet 的最大高度用同一把尺 */
 .search-sheet {
-  max-height: calc(100svh - 112px);
-  max-height: calc(100dvh - 112px);
+  max-height: calc(var(--app-height) - 112px);
+  overflow: auto;
+  -webkit-overflow-scrolling: touch;
 }
+
 @media (max-height: 720px) {
   .trip-sheet {
-    max-height: calc(100svh - 110px);
-    max-height: calc(100dvh - 110px);
+    max-height: calc(var(--app-height) - 110px);
+    overflow: auto;
+    -webkit-overflow-scrolling: touch;
   }
 }
