@@ -1,4 +1,4 @@
-:root {
+﻿:root {
     --green: #d98a95;
     --green-dark: #f4eef4;
     --ink: #f8fbff;
@@ -13,14 +13,13 @@ html, body {
     width: 100%;
     height: 100%;
     min-height: 100%;
-    margin: 0;
-    padding: 0;
-    overflow: hidden;
     background: #aeb4b5;
 }
 body {
+    margin: 0;
     min-height: 100vh;
     min-height: 100dvh;
+    background: #aeb4b5;
     color: var(--ink);
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
     overflow: hidden;
@@ -29,40 +28,44 @@ button, input, select { font: inherit; }
 button { cursor: pointer; }
 
 .phone-shell {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
-    height: 100dvh;
-    margin: 0;
+    position: relative;
+    width: min(100vw, 430px);
+    height: min(100vh, 920px);
+    height: min(100dvh, 920px);
+    min-height: 640px;
+    margin: 0 auto;
     overflow: hidden;
     background: #aeb4b5;
-    z-index: 10;
 }
 
 @supports (height: 100dvh) {
     .phone-shell {
+        height: min(100dvh, 920px);
+    }
+}
+
+@media (max-width: 768px) {
+    body {
+        background: #aeb4b5;
+    }
+
+    .phone-shell {
+        width: 100vw;
         height: 100dvh;
+        min-height: 0;
     }
 }
 
 #map {
     position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
+    inset: calc(-1 * env(safe-area-inset-top)) 0 calc(-1 * env(safe-area-inset-bottom)) 0;
     z-index: 0;
     background: #aeb4b5;
 }
 
 .map-fade {
     position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
+    inset: calc(-1 * env(safe-area-inset-top)) 0 calc(-1 * env(safe-area-inset-bottom)) 0;
     z-index: 1;
     pointer-events: none;
     background: linear-gradient(to bottom, rgba(174,180,181,0.02), rgba(174,180,181,0.05) 36%, rgba(45,35,52,0.34));
@@ -100,11 +103,11 @@ button { cursor: pointer; }
 [data-view="trip"] #menu-btn { display: none; }
 
 .bottom-sheet {
-    position: fixed;
+    position: absolute;
     z-index: 5;
     left: 16px;
     right: 16px;
-    bottom: calc(18px + env(safe-area-inset-bottom));
+    bottom: 18px;
     border: 1px solid var(--line);
     border-radius: 22px;
     background: var(--panel);
@@ -112,11 +115,10 @@ button { cursor: pointer; }
     backdrop-filter: blur(18px);
     -webkit-backdrop-filter: blur(18px);
     transition: opacity 0.22s ease, transform 0.22s ease;
-    max-height: calc(100dvh - 140px);
-    overflow-y: auto;
 }
 
 .search-sheet {
+    max-height: calc(100vh - 112px);
     overflow: auto;
     padding: 14px;
 }
@@ -545,13 +547,8 @@ button { cursor: pointer; }
 }
 
 @media (min-width: 520px) and (max-width: 767px) {
-    html, body {
-        background: #f7f8f5;
-    }
     body { display: grid; place-items: center; padding: 22px; }
     .phone-shell {
-        position: relative;
-        width: auto;
         height: 860px;
         border-radius: 34px;
         box-shadow: 0 28px 80px rgba(36, 42, 46, 0.24);
@@ -566,12 +563,13 @@ button { cursor: pointer; }
 }
 
 @media (min-width: 768px) {
-    html, body {
+    body {
+        display: block;
+        padding: 0;
         background: #f7f8f5;
     }
 
     .phone-shell {
-        position: relative;
         width: 100vw;
         height: 100vh;
         max-width: none;
