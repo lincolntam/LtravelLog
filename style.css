@@ -4,7 +4,7 @@
     --ink: #f8fbff;
     --muted: rgba(255, 255, 255, 0.68);
     --line: rgba(255, 255, 255, 0.18);
-    --panel: rgba(45, 38, 55, 0.58);
+    --panel: rgba(88, 94, 101, 0.84);
     --shadow: 0 24px 58px rgba(21, 26, 34, 0.28);
 }
 
@@ -14,18 +14,18 @@ html, body {
     height: 100%;
     min-height: 100%;
     background:
-        linear-gradient(180deg, rgba(0, 4, 10, 0.04), rgba(7, 14, 23, 0.2) 34%, rgba(0, 2, 7, 0.74)),
-        url("tesla-black.jpg") center center / cover no-repeat,
-        #02050a;
+        linear-gradient(180deg, rgba(234, 237, 236, 0.12), rgba(211, 214, 214, 0.46) 40%, rgba(168, 174, 177, 0.76)),
+        url("Tesla.jpg") center center / cover no-repeat,
+        #e7e9e8;
 }
 body {
     margin: 0;
     min-height: 100vh;
     min-height: 100dvh;
     background:
-        linear-gradient(180deg, rgba(0, 4, 10, 0.04), rgba(7, 14, 23, 0.2) 34%, rgba(0, 2, 7, 0.74)),
-        url("tesla-black.jpg") center center / cover no-repeat,
-        #02050a;
+        linear-gradient(180deg, rgba(234, 237, 236, 0.12), rgba(211, 214, 214, 0.46) 40%, rgba(168, 174, 177, 0.76)),
+        url("Tesla.jpg") center center / cover no-repeat,
+        #e7e9e8;
     color: var(--ink);
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
     overflow: hidden;
@@ -42,9 +42,9 @@ button { cursor: pointer; }
     margin: 0 auto;
     overflow: hidden;
     background:
-        linear-gradient(180deg, rgba(0, 4, 10, 0.04), rgba(7, 14, 23, 0.2) 34%, rgba(0, 2, 7, 0.74)),
-        url("tesla-black.jpg") center center / cover no-repeat,
-        #02050a;
+        linear-gradient(180deg, rgba(234, 237, 236, 0.12), rgba(211, 214, 214, 0.46) 40%, rgba(168, 174, 177, 0.76)),
+        url("Tesla.jpg") center center / cover no-repeat,
+        #e7e9e8;
 }
 
 @supports (height: 100dvh) {
@@ -83,7 +83,7 @@ button { cursor: pointer; }
     inset: calc(-1 * env(safe-area-inset-top)) 0 calc(-1 * env(safe-area-inset-bottom)) 0;
     z-index: 1;
     pointer-events: none;
-    background: linear-gradient(to bottom, rgba(2,5,10,0.02), rgba(2,5,10,0.08) 36%, rgba(5,10,18,0.56));
+    background: linear-gradient(to bottom, rgba(231, 233, 232, 0.02), rgba(231, 233, 232, 0.08) 36%, rgba(69, 75, 82, 0.42));
 }
 
 .top-bar {
@@ -122,16 +122,16 @@ button { cursor: pointer; }
     z-index: 5;
     left: 16px;
     right: 16px;
-    bottom: 18px;
+    bottom: 12px;
     border: 1px solid var(--line);
     border-radius: 22px;
     background:
-        linear-gradient(145deg, rgba(255, 255, 255, 0.12), rgba(103, 151, 184, 0.06)),
-        rgba(3, 8, 15, 0.72);
+        linear-gradient(145deg, rgba(255, 255, 255, 0.08), rgba(115, 122, 129, 0.06)),
+        rgba(88, 94, 101, 0.84);
     box-shadow: var(--shadow);
-    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.16), 0 24px 58px rgba(0, 3, 8, 0.42);
-    backdrop-filter: blur(26px) saturate(1.4);
-    -webkit-backdrop-filter: blur(26px) saturate(1.4);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.12), 0 24px 58px rgba(0, 3, 8, 0.22);
+    backdrop-filter: blur(18px) saturate(1.18);
+    -webkit-backdrop-filter: blur(18px) saturate(1.18);
     transition: opacity 0.22s ease, transform 0.22s ease;
 }
 
@@ -620,7 +620,7 @@ button { cursor: pointer; }
         width: min(430px, calc(100vw - 64px));
         left: 32px;
         right: auto;
-        bottom: 32px;
+        bottom: 20px;
     }
 
     .search-sheet,
@@ -651,7 +651,7 @@ button { cursor: pointer; }
 
     .search-sheet {
         left: 48px;
-        bottom: 48px;
+        bottom: 28px;
     }
 
     .trip-sheet {
