@@ -699,3 +699,34 @@ html, body {
 body, .phone-shell {
   overscroll-behavior: none;
 }
+
+
+/* === Minimal anti-gap patch === */
+html, body { background:#000; }
+
+.phone-shell{
+  background:#000;
+  height: 100vh;
+  height: 100svh;
+  height: 100dvh;
+}
+
+#map, .map-fade{
+  inset: 0 !important;
+  background:#000;
+}
+
+.search-sheet{
+  max-height: calc(100vh - 112px);
+  max-height: calc(100svh - 112px);
+  max-height: calc(100dvh - 112px);
+}
+
+@media (max-height: 720px){
+  .trip-sheet{
+    max-height: calc(100vh - 110px);
+    max-height: calc(100svh - 110px);
+    max-height: calc(100dvh - 110px);
+  }
+}
+
