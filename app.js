@@ -1,4 +1,4 @@
-﻿/* LTravelLog - Version 0.54.9 */
+﻿/* LTravelLog - Version 0.55.10 */
 
 let googleMap;
 let directionsService;
@@ -382,19 +382,6 @@ function getRouteStats(response) {
         km: legs.reduce((sum, leg) => sum + leg.distance.value, 0) / 1000,
         sec: legs.reduce((sum, leg) => sum + leg.duration.value, 0)
     };
-}
-
-function estimateTunnelToll(selectedTunnels) {
-    const start = new Date(document.getElementById("start-time").value || Date.now());
-    return selectedTunnels.reduce((sum, tunnel) => sum + getToll(tunnel, start), 0);
-}
-
-async function decideTunnel(origin, destination, selectedTunnel) {
-    const [originPoint, destinationPoint] = await Promise.all([
-        geocodeLocation(origin),
-        geocodeLocation(destination)
-    ]);
-    return decideTunnelFromPoints(originPoint, destinationPoint, selectedTunnel);
 }
 
 function decideTunnelFromPoints(originPoint, destinationPoint, selectedTunnel) {

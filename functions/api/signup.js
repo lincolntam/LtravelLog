@@ -38,12 +38,14 @@ export async function onRequestPost(context) {
         }
 
         const ip = getClientIp(request);
-        const limit = await rateLimit(env, `signup:${ip}:${email}`, 5, 60 * 60);
-        if (!limit.allowed) {
+        const ipLimit = await rateLimit(env, `signup:${ip}`, 10, 60 * 60);
+        const emailLimit = await rateLimit(env, `signup:${ip}:${email}`, 5, 60 * 60);
+        if (!ipLimit.allowed || !emailLimit.allowed) {
+            const retryAfter = Math.max(ipLimit.retryAfter || 1, emailLimit.retryAfter || 1);
             return json(
                 { error: "嘗試次數太多，請稍後再試" },
                 429,
-                { "Retry-After": String(limit.retryAfter) }
+                { "Retry-After": String(retryAfter) }
             );
         }
 

@@ -148,15 +148,15 @@ async function signToken(payload, env) {
 }
 
 async function verifyToken(token, env) {
-    const parts = token.split(".");
-    if (parts.length !== 3) return null;
-
-    const body = `${parts[0]}.${parts[1]}`;
-    const expected = await hmac(body, getJwtSecret(env));
-    const actual = fromBase64url(parts[2]);
-    if (!timingSafeEqual(actual, expected)) return null;
-
     try {
+        const parts = token.split(".");
+        if (parts.length !== 3) return null;
+
+        const body = `${parts[0]}.${parts[1]}`;
+        const expected = await hmac(body, getJwtSecret(env));
+        const actual = fromBase64url(parts[2]);
+        if (!timingSafeEqual(actual, expected)) return null;
+
         const payload = JSON.parse(decoder.decode(fromBase64url(parts[1])));
         if (!payload.exp || payload.exp < Math.floor(Date.now() / 1000)) return null;
         return payload;
