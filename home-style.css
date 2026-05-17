@@ -709,3 +709,53 @@ button { cursor: pointer; }
     font-size: 12px;
     line-height: 1.4;
 }
+
+.charging-schedule-table {
+    min-width: 420px;
+}
+
+.charging-slot-result {
+    margin-top: 12px;
+    padding: 14px;
+    border-radius: 16px;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.16);
+}
+
+.charging-slot-result strong {
+    display: block;
+    color: #fff;
+    font-size: 16px;
+    margin-bottom: 6px;
+}
+
+.charging-range-grid {
+    display: grid;
+    gap: 10px;
+    margin-top: 12px;
+}
+
+.charging-range-grid label {
+    display: grid;
+    gap: 7px;
+    color: rgba(255, 255, 255, 0.72);
+    font-size: 12px;
+    font-weight: 800;
+}
+
+.charging-range-grid input {
+    width: 100%;
+    min-height: 46px;
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    border-radius: 15px;
+    padding: 0 12px;
+    background: rgba(255, 255, 255, 0.12);
+    color: #fff;
+    font: inherit;
+    outline: none;
+}
+
+.charging-range-grid input:focus {
+    border-color: rgba(255, 255, 255, 0.42);
+    background: rgba(255, 255, 255, 0.16);
+}

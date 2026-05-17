@@ -2,7 +2,7 @@
 
 LTravelLog is a mobile-first Hong Kong trip cost planner for EV drivers. It combines Google Maps routing, Hong Kong tunnel toll rules, and electricity cost assumptions into one route summary.
 
-Current app version: `v0.55.10`
+Current app version: `v0.55.12`
 
 ## Features
 

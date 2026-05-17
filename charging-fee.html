@@ -3,11 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Charging Fee - LTravelLog</title>
+    <title>充電安排 - LTravelLog</title>
     <meta name="theme-color" content="#02050a">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <link rel="stylesheet" href="home-style.css?v=0.55.8">
+    <link rel="stylesheet" href="home-style.css?v=0.55.12">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 </head>
 <body>
@@ -21,22 +21,74 @@
                 </header>
 
                 <section class="info-hero">
-                    <small>Information 02</small>
-                    <h1>充電費由公里、耗電及電價估算。</h1>
+                    <small>分區 1 / 1 樓停車場 L1</small>
+                    <h1>你所在分區的可充電時間表。</h1>
                 </section>
 
                 <section class="detail-list">
-                    <article class="detail-card">
-                        <strong>耗電假設</strong>
-                        <p>Planner 以每公里平均耗電量乘以總距離，估算整段行程需要的 kWh。</p>
+                    <article class="detail-card fee-table-card">
+                        <strong>分區 1 可充電安排</strong>
+                        <p>按屋苑通告，分區 1 由 ATS 系統按指定時段供電；以下只列出你所在的 Zone 1。</p>
+                        <div class="fee-table-wrap">
+                            <table class="fee-table charging-schedule-table">
+                                <thead>
+                                    <tr>
+                                        <th>類型</th>
+                                        <th>可充電時段</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>特別安排</td>
+                                        <td>星期一 00:00 至 11:59</td>
+                                    </tr>
+                                    <tr>
+                                        <td>一般安排</td>
+                                        <td>星期二 12:00 至 星期三 11:59</td>
+                                    </tr>
+                                    <tr>
+                                        <td>一般安排</td>
+                                        <td>星期四 12:00 至 星期五 11:59</td>
+                                    </tr>
+                                    <tr>
+                                        <td>一般安排</td>
+                                        <td>星期六 12:00 至 星期日 11:59</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
                     </article>
                     <article class="detail-card">
-                        <strong>電價選項</strong>
-                        <p>你可以在路線頁選擇不同充電收費，例如住宅/商場充電或 Tesla Supercharge，用於計算行程電費。</p>
+                        <strong>下一個可充電時段</strong>
+                        <p>按你裝置目前日期及時間，即時計算 Zone 1 現在是否可充電。</p>
+                        <button class="current-fee-btn" id="next-charge-slot-btn" type="button">
+                            查看下一個可充電時段
+                            <i class="material-icons">schedule</i>
+                        </button>
+                        <div class="current-fee-result charging-slot-result" id="next-charge-slot-result" aria-live="polite"></div>
                     </article>
                     <article class="detail-card">
-                        <strong>油費比較</strong>
-                        <p>系統會用固定燃油車每公里成本作比較，顯示相對節省金額，方便快速評估一程車的成本。</p>
+                        <strong>檢查自訂時間範圍</strong>
+                        <p>輸入你想充電的開始及結束時間，系統會檢查是否符合 Zone 1 供電安排。</p>
+                        <div class="charging-range-grid">
+                            <label>
+                                開始時間
+                                <input id="charge-range-start" type="datetime-local">
+                            </label>
+                            <label>
+                                結束時間
+                                <input id="charge-range-end" type="datetime-local">
+                            </label>
+                        </div>
+                        <button class="current-fee-btn" id="check-charge-range-btn" type="button">
+                            檢查時間範圍
+                            <i class="material-icons">fact_check</i>
+                        </button>
+                        <div class="current-fee-result charging-slot-result" id="charge-range-result" aria-live="polite"></div>
+                    </article>
+                    <article class="detail-card">
+                        <strong>Planner 電費估算</strong>
+                        <p>路線頁仍會按行程距離、每公里耗電量及你選擇的電價估算行程電費；此頁則記錄你停車場的實際供電時段。</p>
                     </article>
                 </section>
 
@@ -49,13 +101,13 @@
         </section>
 
         <aside class="pc-panel">
-            <small>Information</small>
-            <h2>Charging fee estimate.</h2>
-            <p>This page documents the energy-cost assumptions behind LTravelLog before the user enters the planner.</p>
+            <small>Charging Zone</small>
+            <h2>分區 1 充電時間表。</h2>
+            <p>此頁根據屋苑通告顯示 Zone 1 可供電時段，並可按目前時間計算下一個可充電時段。</p>
         </aside>
     </main>
     <footer class="safe-footer">
-    <div class="version-mark">v0.55.10</div>
+    <div class="version-mark">v0.55.12</div>
         </footer>
     <script>
         document.querySelectorAll(".planner-link").forEach(link => {
@@ -64,6 +116,165 @@
                 window.location.href = "/route.html";
             });
         });
+
+        const zoneOneChargingSlots = [
+            { startDay: 1, startTime: "00:00", endDay: 1, endTime: "11:59", label: "星期一 00:00 至 11:59（特別安排）" },
+            { startDay: 2, startTime: "12:00", endDay: 3, endTime: "11:59", label: "星期二 12:00 至 星期三 11:59" },
+            { startDay: 4, startTime: "12:00", endDay: 5, endTime: "11:59", label: "星期四 12:00 至 星期五 11:59" },
+            { startDay: 6, startTime: "12:00", endDay: 0, endTime: "11:59", label: "星期六 12:00 至 星期日 11:59" }
+        ];
+
+        const weekMs = 7 * 24 * 60 * 60 * 1000;
+        const dateFormatter = new Intl.DateTimeFormat("zh-HK", {
+            weekday: "long",
+            month: "numeric",
+            day: "numeric",
+            hour: "2-digit",
+            minute: "2-digit",
+            hour12: false
+        });
+
+        function getWeekStart(date) {
+            const weekStart = new Date(date);
+            weekStart.setHours(0, 0, 0, 0);
+            weekStart.setDate(weekStart.getDate() - weekStart.getDay());
+            return weekStart;
+        }
+
+        function applyDayAndTime(weekStart, day, time, weekOffset) {
+            const [hours, minutes] = time.split(":").map(Number);
+            const slotTime = new Date(weekStart.getTime() + (weekOffset * weekMs));
+            slotTime.setDate(slotTime.getDate() + day);
+            slotTime.setHours(hours, minutes, 0, 0);
+            return slotTime;
+        }
+
+        function buildSlotOccurrences(now) {
+            const weekStart = getWeekStart(now);
+            return zoneOneChargingSlots.flatMap(slot => [-1, 0, 1, 2].map(weekOffset => {
+                const start = applyDayAndTime(weekStart, slot.startDay, slot.startTime, weekOffset);
+                const end = applyDayAndTime(weekStart, slot.endDay, slot.endTime, weekOffset);
+
+                if (end < start) {
+                    end.setTime(end.getTime() + weekMs);
+                }
+
+                return { ...slot, start, end };
+            })).sort((a, b) => a.start - b.start);
+        }
+
+        function describeChargingSlot(now = new Date()) {
+            const slots = buildSlotOccurrences(now);
+            const activeSlot = slots.find(slot => slot.start <= now && now <= slot.end);
+
+            if (activeSlot) {
+                return {
+                    title: "現在可以充電",
+                    body: `Zone 1 現正供電，至 ${dateFormatter.format(activeSlot.end)} 結束。`,
+                    meta: activeSlot.label
+                };
+            }
+
+            const nextSlot = slots.find(slot => slot.start > now);
+            return {
+                title: "下一個可充電時段",
+                body: `${dateFormatter.format(nextSlot.start)} 至 ${dateFormatter.format(nextSlot.end)}`,
+                meta: nextSlot.label
+            };
+        }
+
+        function formatDateTimeLocal(date) {
+            const pad = value => String(value).padStart(2, "0");
+            return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}T${pad(date.getHours())}:${pad(date.getMinutes())}`;
+        }
+
+        function getRangeCoverage(start, end) {
+            const slots = buildSlotOccurrences(start);
+            const overlappingSlots = slots.filter(slot => slot.end >= start && slot.start <= end);
+            const fullyCovered = overlappingSlots.some(slot => slot.start <= start && slot.end >= end);
+            const nextSlot = slots.find(slot => slot.start > start);
+
+            return { fullyCovered, overlappingSlots, nextSlot };
+        }
+
+        function setDefaultChargingRange() {
+            const startInput = document.getElementById("charge-range-start");
+            const endInput = document.getElementById("charge-range-end");
+            const start = new Date();
+            start.setSeconds(0, 0);
+
+            const end = new Date(start);
+            end.setHours(end.getHours() + 2);
+
+            if (startInput && endInput) {
+                startInput.value = formatDateTimeLocal(start);
+                endInput.value = formatDateTimeLocal(end);
+            }
+        }
+
+        document.getElementById("next-charge-slot-btn")?.addEventListener("click", () => {
+            const result = document.getElementById("next-charge-slot-result");
+            const slotInfo = describeChargingSlot();
+
+            result.innerHTML = `
+                <strong>${slotInfo.title}</strong>
+                <p>${slotInfo.body}</p>
+                <div class="current-fee-meta">${slotInfo.meta}</div>
+            `;
+            result.classList.add("is-visible");
+        });
+
+        document.getElementById("check-charge-range-btn")?.addEventListener("click", () => {
+            const startInput = document.getElementById("charge-range-start");
+            const endInput = document.getElementById("charge-range-end");
+            const result = document.getElementById("charge-range-result");
+            const start = new Date(startInput.value);
+            const end = new Date(endInput.value);
+
+            if (!startInput.value || !endInput.value || Number.isNaN(start.getTime()) || Number.isNaN(end.getTime())) {
+                result.innerHTML = `
+                    <strong>請先輸入時間</strong>
+                    <p>需要同時填寫開始及結束時間。</p>
+                `;
+                result.classList.add("is-visible");
+                return;
+            }
+
+            if (end <= start) {
+                result.innerHTML = `
+                    <strong>時間範圍無效</strong>
+                    <p>結束時間必須晚於開始時間。</p>
+                `;
+                result.classList.add("is-visible");
+                return;
+            }
+
+            const coverage = getRangeCoverage(start, end);
+
+            if (coverage.fullyCovered) {
+                result.innerHTML = `
+                    <strong>此時段可以充電</strong>
+                    <p>${dateFormatter.format(start)} 至 ${dateFormatter.format(end)} 完全落在 Zone 1 供電時段內。</p>
+                    <div class="current-fee-meta">${coverage.overlappingSlots[0].label}</div>
+                `;
+            } else if (coverage.overlappingSlots.length > 0) {
+                result.innerHTML = `
+                    <strong>只覆蓋部分時間</strong>
+                    <p>你選擇的時間範圍只有部分與 Zone 1 供電時段重疊。</p>
+                    <div class="current-fee-meta">${coverage.overlappingSlots.map(slot => slot.label).join("、")}</div>
+                `;
+            } else {
+                result.innerHTML = `
+                    <strong>此時段不可充電</strong>
+                    <p>你選擇的時間範圍未落在 Zone 1 供電時段內。</p>
+                    <div class="current-fee-meta">下一段：${coverage.nextSlot.label}</div>
+                `;
+            }
+
+            result.classList.add("is-visible");
+        });
+
+        setDefaultChargingRange();
     </script>
 </body>
 </html>
