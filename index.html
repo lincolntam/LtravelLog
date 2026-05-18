@@ -1,4 +1,4 @@
-<!doctype html>
+﻿<!doctype html>
 <html lang="zh-Hant">
 <head>
   <meta charset="utf-8" />
@@ -8,7 +8,7 @@
   <meta name="description" content="Tesla Smart Route Planner (Hong Kong) - trip cost with tunnel toll + EV charging estimate." />
 
   <!-- PWA -->
-  <link rel="manifest" href="/manifest.json?v=0.55.12" />
+  <link rel="manifest" href="/manifest.json?v=0.55.13" />
   <meta name="theme-color" content="#02050a" />
 
   <!-- iOS PWA -->
@@ -21,7 +21,7 @@
   <link rel="icon" href="/favicon.ico" />
 
   <!-- Styles (cache busting) -->
-  <link rel="stylesheet" href="/style.css?v=0.55.12" />
+  <link rel="stylesheet" href="/style.css?v=0.55.13" />
 
   <!-- Optional: preloads (speed up background image) -->
   <link rel="preload" as="image" href="/tesla-black.jpg" />
@@ -45,17 +45,17 @@
 
       <nav class="quick-actions" aria-label="Quick actions">
         <button class="quick-btn glass-card" id="btnPlanner" type="button">
-          <span class="quick-icon" aria-hidden="true">🧭</span>
+          <span class="quick-icon" aria-hidden="true">?妣</span>
           <span class="quick-text">Planner</span>
         </button>
 
         <button class="quick-btn glass-card" id="btnTunnel" type="button">
-          <span class="quick-icon" aria-hidden="true">🧲</span>
+          <span class="quick-icon" aria-hidden="true">?妓</span>
           <span class="quick-text">Tunnel</span>
         </button>
 
         <button class="quick-btn glass-card" id="btnCharging" type="button">
-          <span class="quick-icon" aria-hidden="true">⚡</span>
+          <span class="quick-icon" aria-hidden="true">??/span>
           <span class="quick-text">Charging</span>
         </button>
       </nav>
@@ -81,26 +81,26 @@
         <!-- Info Cards -->
         <article class="info-card glass-card" id="cardTunnelFee" role="button" tabindex="0" aria-label="Tunnel fee">
           <div class="info-left">
-            <div class="info-icon" aria-hidden="true">🧾</div>
+            <div class="info-icon" aria-hidden="true">?屁</div>
             <div class="info-text">
               <div class="info-label">Information</div>
               <div class="info-title">Tunnel fee</div>
               <div class="info-subtitle">Time-varying toll and fixed tunnel charges.</div>
             </div>
           </div>
-          <div class="info-arrow" aria-hidden="true">›</div>
+          <div class="info-arrow" aria-hidden="true">??/div>
         </article>
 
         <article class="info-card glass-card" id="cardChargingFee" role="button" tabindex="0" aria-label="Charging fee">
           <div class="info-left">
-            <div class="info-icon" aria-hidden="true">🔋</div>
+            <div class="info-icon" aria-hidden="true">??</div>
             <div class="info-text">
               <div class="info-label">Information</div>
               <div class="info-title">Charging fee</div>
               <div class="info-subtitle">Charging cost assumptions used by planner.</div>
             </div>
           </div>
-          <div class="info-arrow" aria-hidden="true">›</div>
+          <div class="info-arrow" aria-hidden="true">??/div>
         </article>
       </section>
     </main>
@@ -108,24 +108,24 @@
     <!-- Bottom Navigation (safe area supported in CSS via env(safe-area-inset-bottom)) -->
     <nav class="bottom-nav glass-card" aria-label="Bottom navigation">
       <button class="nav-item active" id="navHome" type="button" aria-label="Home">
-        <span class="nav-icon" aria-hidden="true">⌂</span>
+        <span class="nav-icon" aria-hidden="true">??/span>
         <span class="nav-text">Home</span>
       </button>
 
       <button class="nav-item" id="navExplore" type="button" aria-label="Explore">
-        <span class="nav-icon" aria-hidden="true">🧭</span>
+        <span class="nav-icon" aria-hidden="true">?妣</span>
         <span class="nav-text">Explore</span>
       </button>
 
       <button class="nav-item" id="navInfo" type="button" aria-label="Info">
-        <span class="nav-icon" aria-hidden="true">👤</span>
+        <span class="nav-icon" aria-hidden="true">?</span>
         <span class="nav-text">Info</span>
       </button>
     </nav>
   </div>
 
   <!-- Scripts (cache busting) -->
-  <script src="/app.js?v=0.55.12" defer></script>
+  <script src="/app.js?v=0.55.13" defer></script>
 
   <!-- PWA Service Worker Register (if sw.js exists) -->
   <script>
@@ -134,7 +134,7 @@
 
       window.addEventListener("load", async () => {
         try {
-          const reg = await navigator.serviceWorker.register("/sw.js?v=0.55.12");
+          const reg = await navigator.serviceWorker.register("/sw.js?v=0.55.13");
 
           // Optional: auto reload when update is installed (prevents "stuck on old PWA")
           reg.addEventListener("updatefound", () => {
