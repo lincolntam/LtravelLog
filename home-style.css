@@ -63,6 +63,8 @@ body::before {
         linear-gradient(180deg, rgba(0, 4, 10, 0.04), rgba(7, 14, 23, 0.2) 34%, rgba(0, 2, 7, 0.74)),
         url("tesla-black.jpg") center center / cover no-repeat,
         #02050a;
+      padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
+}
 }
 
 button, a { font: inherit; }
