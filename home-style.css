@@ -559,9 +559,9 @@ button { cursor: pointer; }
 
     .phone-home {
         width: 100%;
-        min-height: calc(100dvh + env(safe-area-inset-top) + env(safe-area-inset-bottom));
-        height: calc(100dvh + env(safe-area-inset-top) + env(safe-area-inset-bottom));
-        margin-top: calc(-1 * env(safe-area-inset-top));
+        min-height: 100dvh;
+        height: 100dvh;
+        margin-top: 0;
         border-radius: 0;
         box-shadow: none;
     }
@@ -587,7 +587,7 @@ button { cursor: pointer; }
     }
 
     .pwa-stage {
-        min-height: calc(100dvh + env(safe-area-inset-bottom));
+        min-height: 100dvh;
         display: block;
         padding: 0;
         background: transparent;
@@ -596,17 +596,17 @@ button { cursor: pointer; }
     .phone-home {
         width: 100%;
         max-width: none;
-        min-height: calc(100dvh + env(safe-area-inset-top) + env(safe-area-inset-bottom));
-        height: calc(100dvh + env(safe-area-inset-top) + env(safe-area-inset-bottom));
-        margin-top: calc(-1 * env(safe-area-inset-top));
+        min-height: 100dvh;
+        height: 100dvh;
+        margin-top: 0;
         border-radius: 0;
         background: transparent;
         box-shadow: none;
     }
 
     .home-content {
-        padding-top: calc(52px + env(safe-area-inset-top));
-        padding-bottom: calc(110px + env(safe-area-inset-bottom));
+        padding-top: calc(18px + env(safe-area-inset-top));
+        padding-bottom: calc(128px + env(safe-area-inset-bottom));
     }
 }
 

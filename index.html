@@ -8,7 +8,7 @@
   <meta name="description" content="Tesla Smart Route Planner (Hong Kong) - trip cost with tunnel toll + EV charging estimate." />
 
   <!-- PWA -->
-  <link rel="manifest" href="/manifest.json?v=0.55.13" />
+  <link rel="manifest" href="/manifest.json?v=0.55.14" />
   <meta name="theme-color" content="#02050a" />
 
   <!-- iOS PWA -->
@@ -21,7 +21,7 @@
   <link rel="icon" href="/favicon.ico" />
 
   <!-- Styles (cache busting) -->
-  <link rel="stylesheet" href="/style.css?v=0.55.13" />
+  <link rel="stylesheet" href="/style.css?v=0.55.14" />
 
   <!-- Optional: preloads (speed up background image) -->
   <link rel="preload" as="image" href="/tesla-black.jpg" />
@@ -125,7 +125,7 @@
   </div>
 
   <!-- Scripts (cache busting) -->
-  <script src="/app.js?v=0.55.13" defer></script>
+  <script src="/app.js?v=0.55.14" defer></script>
 
   <!-- PWA Service Worker Register (if sw.js exists) -->
   <script>
@@ -134,7 +134,7 @@
 
       window.addEventListener("load", async () => {
         try {
-          const reg = await navigator.serviceWorker.register("/sw.js?v=0.55.13");
+          const reg = await navigator.serviceWorker.register("/sw.js?v=0.55.14");
 
           // Optional: auto reload when update is installed (prevents "stuck on old PWA")
           reg.addEventListener("updatefound", () => {
