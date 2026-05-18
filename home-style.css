@@ -10,10 +10,21 @@
     --sky: #9fc7df;
     --navy: #060b12;
     --shadow: 0 26px 70px rgba(0, 3, 8, 0.58);
-    --safe-area-left: 0;
-    --safe-area-right: 0;
-    --safe-area-top: 0;
-    --safe-area-inset-bottom: 0;
+  --safe-area-inset-top: constant(safe-area-inset-top);
+  --safe-area-inset-right: constant(safe-area-inset-right);
+  --safe-area-inset-bottom: constant(safe-area-inset-bottom);
+  --safe-area-inset-left: constant(safe-area-inset-left);
+  
+  // 支持新语法
+  --safe-area-inset-top: env(safe-area-inset-top);
+  --safe-area-inset-right: env(safe-area-inset-right);
+  --safe-area-inset-bottom: env(safe-area-inset-bottom);
+  --safe-area-inset-left: env(safe-area-inset-left);
+
+作者：屁__啦
+链接：https://juejin.cn/post/7516438622980112396
+来源：稀土掘金
+著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。
 }
 
 * { box-sizing: border-box; }
